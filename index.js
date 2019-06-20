@@ -14,6 +14,8 @@ const addMaterial = require('./libs/addMaterial');
 const addRedux = require('./libs/addRedux');
 const addRouter = require('./libs/addRouter');
 const addSass = require('./libs/addSass');
+const addCommit = require('./libs/addCommit');
+const restructuring = require('./libs/restructuring');
 
 const init = () => {
   shell.echo(
@@ -35,36 +37,39 @@ const askQuestions = () => {
     {
       name: 'PROJECT_NAME',
       type: 'input',
-      message: 'What is the name of the app ?'
+      message: 'What is the name of the app ?',
+      validate: value => {
+        const pass = value.match(/^\S+$/g);
+        if (pass) return true;
+        return 'Please enter a valid name project (without-space)';
+      }
     },
     {
-      name: 'CHOICES',
+      name: 'LANGUAGES',
+      type: 'list',
+      message: 'Select your language:',
+      choices: ['Javascript', 'Typescript'],
+      filter: val => {
+        return val === 'Typescript' ? true : false;
+      }
+    },
+    {
+      name: 'PACKAGES',
       type: 'checkbox',
-      message: 'Select your choice:',
+      message: 'Select your packages:',
       choices: [{ name: 'Material-ui' }, { name: 'Router-dom' }, { name: 'Redux' }, { name: 'Sass' }]
     }
   ];
   return inquirer.prompt(questions);
 };
 
-const createProject = async (projectName, choices) => {
-  const createApp = await addCreateReactApp(projectName, spinner);
-  // Move to project
-  shell.cd(`${projectName}`);
-  // Create folders
-  shell.mkdir('-p', `src/components/App`);
-  // Rename files
-  shell.mv('src/App.js', 'src/App.component.js');
-  shell.mv('src/App.css', 'src/App.style.css');
-  // Move files
-  shell.mv(['src/App.component.js', 'src/App.test.js', 'src/App.style.css'], 'src/components/App/');
-  // Change import location in index & App
-  shell.sed('-i', './App', './components/App/App.component', 'src/index.js');
-  shell.sed('-i', './App.css', './App.style.css', 'src/components/App/App.component.js');
-  shell.sed('-i', './logo.svg', '../../logo.svg', 'src/components/App/App.component.js');
+const createProject = async (projectName, languages, packages) => {
+  const createApp = await addCreateReactApp(projectName, languages, spinner);
 
-  for (let i = 0; i < choices.length; i++) {
-    switch (choices[i]) {
+  await restructuring(projectName, languages, spinner);
+
+  for (let i = 0; i < packages.length; i++) {
+    switch (packages[i]) {
       case 'Material-ui':
         await addMaterial(spinner);
         break;
@@ -78,7 +83,7 @@ const createProject = async (projectName, choices) => {
         break;
 
       case 'Sass':
-        await addSass(spinner);
+        await addSass(languages, spinner);
         break;
 
       default:
@@ -94,14 +99,17 @@ const run = async () => {
 
   // Ask Question
   const answers = await askQuestions();
-  const { PROJECT_NAME, CHOICES } = answers;
+  const { PROJECT_NAME, LANGUAGES, PACKAGES } = answers;
 
   // Create Project
-  const createdProjectMessage = await createProject(PROJECT_NAME, CHOICES);
+  const createdProjectMessage = await createProject(PROJECT_NAME, LANGUAGES, PACKAGES);
+
+  // New commit after customization
+  await addCommit(spinner);
+
   if (spinner.isSpinning) {
     spinner.stop();
   }
-
   // show success message
   sendMessage(createdProjectMessage);
   shell.exit(0);
