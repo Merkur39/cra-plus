@@ -1,6 +1,6 @@
 {
   "name": "cra-plus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create starter react with best archi!",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,10 @@
     "React",
     "CLI"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Merkur39/cra-plus"
+  },
   "author": "Merkur39 <merkkur39@gmail.com>",
   "license": "MIT",
   "dependencies": {
