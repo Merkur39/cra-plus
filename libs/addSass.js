@@ -5,7 +5,7 @@ const addSass = async (withTS, spinner) => {
   spinner.start('Install node-sass');
   return new Promise((resolve, reject) => {
     shell.exec(`npm install node-sass`, { silent: true }, (code, stdout, stderr) => {
-      if (code != 0) {
+      if (code !== 0) {
         spinner.stop();
         shell.echo(chalk.red.bold(`${stderr}`));
         shell.exit(1);

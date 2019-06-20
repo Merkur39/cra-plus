@@ -2,10 +2,10 @@ const shell = require('shelljs');
 const chalk = require('chalk');
 
 const addCreateReactApp = async (projectName, withTS, spinner) => {
-  spinner.start(`Execute create-react-app ${withTS ? 'with typescript' : null}`);
+  spinner.start(`Execute create-react-app ${withTS ? 'with typescript' : ''}`);
   return new Promise((resolve, reject) => {
     shell.exec(
-      `npx create-react-app ${projectName.toLowerCase()} ${withTS ? '--typescript' : null}`,
+      `npx create-react-app ${projectName.toLowerCase()} ${withTS ? '--typescript' : ''}`,
       { silent: true },
       (code, stdout, stderr) => {
         if (code != 0) {
