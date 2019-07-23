@@ -16,23 +16,89 @@ const restructuring = async (projectName, withTS, spinner) => {
       commands.push(shell.mv('src/App.js', 'src/App.component.js'));
       commands.push(shell.mv('src/App.css', 'src/App.style.css'));
       // Move files
-      commands.push(shell.mv(['src/App.component.js', 'src/App.test.js', 'src/App.style.css'], 'src/components/App/'));
+      commands.push(
+        shell.mv(
+          ['src/App.component.js', 'src/App.test.js', 'src/App.style.css'],
+          'src/components/App/'
+        )
+      );
       // Change import location in index & App
-      commands.push(shell.sed('-i', './App', './components/App/App.component', 'src/index.js'));
-      commands.push(shell.sed('-i', './App.css', './App.style.css', 'src/components/App/App.component.js'));
-      commands.push(shell.sed('-i', './logo.svg', '../../logo.svg', 'src/components/App/App.component.js'));
+      commands.push(
+        shell.sed(
+          '-i',
+          './App',
+          './components/App/App.component',
+          'src/index.js'
+        )
+      );
+      commands.push(
+        shell.sed(
+          '-i',
+          './App',
+          './components/App/App.component',
+          'src/components/App/App.test.js'
+        )
+      );
+      commands.push(
+        shell.sed(
+          '-i',
+          './App.css',
+          './App.style.css',
+          'src/components/App/App.component.js'
+        )
+      );
+      commands.push(
+        shell.sed(
+          '-i',
+          './logo.svg',
+          '../../logo.svg',
+          'src/components/App/App.component.js'
+        )
+      );
     } else {
       // Rename files
       commands.push(shell.mv('src/App.tsx', 'src/App.component.tsx'));
       commands.push(shell.mv('src/App.css', 'src/App.style.css'));
       // Move files
       commands.push(
-        shell.mv(['src/App.component.tsx', 'src/App.test.tsx', 'src/App.style.css'], 'src/components/App/')
+        shell.mv(
+          ['src/App.component.tsx', 'src/App.test.tsx', 'src/App.style.css'],
+          'src/components/App/'
+        )
       );
       // Change import location in index & App
-      commands.push(shell.sed('-i', './App', './components/App/App.component', 'src/index.tsx'));
-      commands.push(shell.sed('-i', './App.css', './App.style.css', 'src/components/App/App.component.tsx'));
-      commands.push(shell.sed('-i', './logo.svg', '../../logo.svg', 'src/components/App/App.component.tsx'));
+      commands.push(
+        shell.sed(
+          '-i',
+          './App',
+          './components/App/App.component',
+          'src/index.tsx'
+        )
+      );
+      commands.push(
+        shell.sed(
+          '-i',
+          './App',
+          './components/App/App.component',
+          'src/components/App/App.test.tsx'
+        )
+      );
+      commands.push(
+        shell.sed(
+          '-i',
+          './App.css',
+          './App.style.css',
+          'src/components/App/App.component.tsx'
+        )
+      );
+      commands.push(
+        shell.sed(
+          '-i',
+          './logo.svg',
+          '../../logo.svg',
+          'src/components/App/App.component.tsx'
+        )
+      );
     }
 
     // Print errors but continue install

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const inquirer = require('inquirer');
 const chalk = require('chalk');
 const figlet = require('figlet');
 const shell = require('shelljs');
@@ -9,11 +8,14 @@ const spinner = ora();
 spinner.color = 'green';
 spinner.spinner = 'dots';
 
+const {
+  projectName,
+  languages,
+  templates,
+  packages
+} = require('./libs/choices');
+const packagesList = require('./constants/packages');
 const addCreateReactApp = require('./libs/addCreateReactApp');
-const addMaterial = require('./libs/addMaterial');
-const addRedux = require('./libs/addRedux');
-const addRouter = require('./libs/addRouter');
-const addSass = require('./libs/addSass');
 const addCommit = require('./libs/addCommit');
 const restructuring = require('./libs/restructuring');
 
@@ -32,80 +34,47 @@ const sendMessage = createdProjectMessage => {
   shell.echo(chalk.green.bold(`Done! ${createdProjectMessage}`));
 };
 
-const askQuestions = () => {
-  const questions = [
-    {
-      name: 'PROJECT_NAME',
-      type: 'input',
-      message: 'What is the name of the app ?',
-      validate: value => {
-        const pass = value.match(/^\S+$/g);
-        if (pass) return true;
-        return 'Please enter a valid name project (without-space)';
-      }
-    },
-    {
-      name: 'LANGUAGES',
-      type: 'list',
-      message: 'Select your language:',
-      choices: ['Javascript', 'Typescript'],
-      filter: val => {
-        return val === 'Typescript' ? true : false;
-      }
-    },
-    {
-      name: 'PACKAGES',
-      type: 'checkbox',
-      message: 'Select your packages:',
-      choices: [{ name: 'Material-ui' }, { name: 'Router-dom' }, { name: 'Redux' }, { name: 'Sass' }]
-    }
-  ];
-  return inquirer.prompt(questions);
-};
-
-const createProject = async (projectName, languages, packages) => {
+const createProject = async (projectName, languages, packages = []) => {
   const createApp = await addCreateReactApp(projectName, languages, spinner);
 
   await restructuring(projectName, languages, spinner);
 
   for (let i = 0; i < packages.length; i++) {
-    switch (packages[i]) {
-      case 'Material-ui':
-        await addMaterial(spinner);
-        break;
-
-      case 'Router-dom':
-        await addRouter(spinner);
-        break;
-
-      case 'Redux':
-        await addRedux(spinner);
-        break;
-
-      case 'Sass':
-        await addSass(languages, spinner);
-        break;
-
-      default:
-        break;
-    }
+    await packagesList[i].install(spinner, languages);
   }
   return createApp;
 };
 
 const run = async () => {
+  let createdProjectMessage;
+
   // Show Intro
   init();
 
-  // Ask Question
-  const answers = await askQuestions();
-  const { PROJECT_NAME, LANGUAGES, PACKAGES } = answers;
+  // Get Choices
+  const { PROJECT_NAME } = await projectName();
+  const { LANGUAGES } = await languages();
+  const { TEMPLATES } = await templates();
 
-  // Create Project
-  const createdProjectMessage = await createProject(PROJECT_NAME, LANGUAGES, PACKAGES);
+  switch (TEMPLATES) {
+    case 1:
+      createdProjectMessage = await createProject(PROJECT_NAME, LANGUAGES);
+      break;
+    case 2:
+      const { PACKAGES } = await packages();
+      createdProjectMessage = await createProject(
+        PROJECT_NAME,
+        LANGUAGES,
+        PACKAGES
+      );
+      break;
+    default:
+      createdProjectMessage = await createProject(PROJECT_NAME, LANGUAGES);
+      break;
+  }
 
   // New commit after customization
-  await addCommit(spinner);
+  await addCommit(spinner, PROJECT_NAME);
 
   if (spinner.isSpinning) {
     spinner.stop();
