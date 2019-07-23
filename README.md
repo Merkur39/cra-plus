@@ -9,5 +9,5 @@ Simply use the "npx cra-plus" command in your terminal where you want to create 
 # Soon...
 
 - ~~Typescript choice~~,
-- More customization possible
 - ~~Auto-commit new architecture~~
+- Add templates choice (in Progress)
