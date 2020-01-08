@@ -1,12 +1,14 @@
 {
   "name": "cra-plus",
-  "version": "1.2.0",
-  "description": "Create starter react with best archi!",
+  "version": "1.2.1",
+  "description": "Create app & components react with best archi!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin": "./index.js",
+  "bin": {
+    "crap": "index.js"
+  },
   "keywords": [
     "React",
     "CLI"
@@ -18,10 +20,21 @@
   "author": "Merkur39 <merkkur39@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.4",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
     "chalk": "^2.4.2",
     "figlet": "^1.2.3",
     "inquirer": "^6.3.1",
     "ora": "^3.4.0",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.3",
+    "typescript": "^3.7.4"
+  },
+  "devDependencies": {
+    "@types/node-sass": "^4.11.0",
+    "i": "^0.3.6",
+    "node-sass": "^4.13.0",
+    "npm": "^6.13.4"
   }
 }

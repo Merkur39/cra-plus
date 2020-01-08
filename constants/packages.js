@@ -1,29 +1,10 @@
-const addMaterial = require('../libs/addMaterial');
-const addRouter = require('../libs/addRouter');
-const addRedux = require('../libs/addRedux');
-const addSass = require('../libs/addSass');
-
-const PackagesList = [
-  {
-    name: 'Material-ui',
-    value: 0,
-    install: spinner => addMaterial(spinner)
-  },
-  {
-    name: 'Router-dom',
-    value: 1,
-    install: (spinner, withTS) => addRouter(spinner, withTS)
-  },
-  {
-    name: 'Redux',
-    value: 2,
-    install: (spinner, withTS) => addRedux(spinner, withTS)
-  },
-  {
-    name: 'Sass',
-    value: 3,
-    install: (spinner, withTS) => addSass(spinner, withTS)
-  }
+const PackagesList = [{ name: 'node-sass', prefix: '' }];
+const PackagesTypescriptList = [
+  { name: 'typescript', prefix: '' },
+  { name: 'jest', prefix: '@types/' },
+  { name: 'node', prefix: '@types/' },
+  { name: 'react', prefix: '@types/' },
+  { name: 'react-dom', prefix: '@types/' }
 ];
 
-module.exports = PackagesList;
+module.exports = { PackagesList, PackagesTypescriptList };

@@ -5,7 +5,7 @@ const addCreateReactApp = async (projectName, withTS, spinner) => {
   spinner.start(`Execute create-react-app ${withTS ? 'with typescript' : ''}`);
   return new Promise((resolve, reject) => {
     shell.exec(
-      `npx create-react-app ${projectName.toLowerCase()} ${withTS ? '--typescript' : ''}`,
+      `npx create-react-app ${projectName.toLowerCase()}`,
       { silent: true },
       (code, stdout, stderr) => {
         if (code != 0) {

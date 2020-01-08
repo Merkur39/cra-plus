@@ -3,9 +3,9 @@ const chalk = require('chalk');
 
 const addSass = async (spinner, withTS) => {
   spinner.start('Install node-sass');
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     shell.exec(
-      `npm i -S node-sass ${withTS ? '&& npm i -D @types/node-sass' : ''}`,
+      `npm i -S node-sass ${withTS ? 'npm i -D @types/node-sass' : ''}`,
       { silent: true },
       (code, stdout, stderr) => {
         if (code !== 0) {
@@ -13,30 +13,6 @@ const addSass = async (spinner, withTS) => {
           shell.echo(chalk.red.bold(`${stderr}`));
           shell.exit(1);
         } else {
-          // Rename files
-          shell.mv('src/index.css', 'src/index.scss');
-          shell.mv(
-            'src/components/App/App.style.css',
-            'src/components/App/App.style.scss'
-          );
-          // Change import location in index & App
-          if (!withTS) {
-            shell.sed('-i', './index.css', './index.scss', 'src/index.js');
-            shell.sed(
-              '-i',
-              './App.style.css',
-              './App.style.scss',
-              'src/components/App/App.component.js'
-            );
-          } else {
-            shell.sed('-i', './index.css', './index.scss', 'src/index.tsx');
-            shell.sed(
-              '-i',
-              './App.style.css',
-              './App.style.scss',
-              'src/components/App/App.component.tsx'
-            );
-          }
           spinner.succeed();
           return resolve(stdout);
         }

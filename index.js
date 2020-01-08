@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+// let program = require('commander');
 const chalk = require('chalk');
 const figlet = require('figlet');
 const shell = require('shelljs');
@@ -8,16 +9,13 @@ const spinner = ora();
 spinner.color = 'green';
 spinner.spinner = 'dots';
 
-const {
-  projectName,
-  languages,
-  templates,
-  packages
-} = require('./libs/choices');
-const packagesList = require('./constants/packages');
+const { projectName, useTypescript, useSass } = require('./libs/choices');
+// const packagesList = require('./constants/packages');
 const addCreateReactApp = require('./libs/addCreateReactApp');
 const addCommit = require('./libs/addCommit');
 const restructuring = require('./libs/restructuring');
+const addSass = require('./libs/addSass');
+const addTypescript = require('./libs/addTypescript');
 
 const init = () => {
   shell.echo(
@@ -34,14 +32,18 @@ const sendMessage = createdProjectMessage => {
   shell.echo(chalk.green.bold(`Done! ${createdProjectMessage}`));
 };
 
-const createProject = async (projectName, languages, packages = []) => {
-  const createApp = await addCreateReactApp(projectName, languages, spinner);
+const createProject = async (projectName, withTS, withSass) => {
+  const createApp = await addCreateReactApp(projectName, withTS, spinner);
 
-  await restructuring(projectName, languages, spinner);
-
-  for (let i = 0; i < packages.length; i++) {
-    await packagesList[i].install(spinner, languages);
+  if (withSass) {
+    await addSass(spinner, withTS);
   }
+  if (withTS) {
+    await addTypescript(spinner);
+  }
+
+  await restructuring(projectName, withTS, withSass, spinner);
+
   return createApp;
 };
 
@@ -52,29 +54,14 @@ const run = async () => {
   init();
 
   // Get Choices
-  const { PROJECT_NAME } = await projectName();
-  const { LANGUAGES } = await languages();
-  const { TEMPLATES } = await templates();
+  const { project_name } = await projectName();
+  const { ts } = await useTypescript();
+  const { sass } = await useSass();
 
-  switch (TEMPLATES) {
-    case 1:
-      createdProjectMessage = await createProject(PROJECT_NAME, LANGUAGES);
-      break;
-    case 2:
-      const { PACKAGES } = await packages();
-      createdProjectMessage = await createProject(
-        PROJECT_NAME,
-        LANGUAGES,
-        PACKAGES
-      );
-      break;
-    default:
-      createdProjectMessage = await createProject(PROJECT_NAME, LANGUAGES);
-      break;
-  }
+  createdProjectMessage = await createProject(project_name, ts, sass);
 
   // New commit after customization
-  await addCommit(spinner, PROJECT_NAME);
+  // await addCommit(spinner, project_name);
 
   if (spinner.isSpinning) {
     spinner.stop();
@@ -85,3 +72,12 @@ const run = async () => {
 };
 
 run();
+
+// program
+//   .command('gc <component>')
+//   .option('-n, --nofolder', 'Do not wrap component in folder')
+//   .option('-s, --style', 'With stylesheet')
+//   .option('-cl, --class', 'Create class component')
+//   .action(createComponent);
+
+// program.parse(process.argv);

@@ -1,43 +1,45 @@
 const inquirer = require('inquirer');
-const templatesList = require('../constants/templatesList');
-const packagesList = require('../constants/packages');
+
+/**
+ * Replace space to CamelCase on string
+ * @param {String} str
+ * @returns
+ */
+const formatingName = str => {
+  const newStr = str
+    .toLowerCase()
+    .replace(
+      /(\w+)(?:\s+|$)/g,
+      (_, txt) => `${txt.charAt(0).toUpperCase()}${txt.substr(1)}`
+    );
+  return `${newStr.charAt(0).toLowerCase()}${newStr.substr(1)}`;
+};
 
 const projectName = () => {
   return inquirer.prompt({
-    name: 'PROJECT_NAME',
+    name: 'project_name',
     type: 'input',
     message: 'What is the name of the app ?',
-    filter: value => {
-      return value.replace(/\s/g, '_').toLowerCase();
-    }
+    filter: value => value.replace(/\s/g, '_').toLowerCase()
   });
 };
 
-const languages = () => {
+const useTypescript = () => {
   return inquirer.prompt({
-    name: 'LANGUAGES',
+    name: 'ts',
     type: 'confirm',
-    message: 'Use Typescript ? (default: No)',
-    default: false
+    message: 'Use Typescript ?',
+    default: true
   });
 };
 
-const templates = () => {
+const useSass = () => {
   return inquirer.prompt({
-    name: 'TEMPLATES',
-    type: 'list',
-    message: 'Select your template:',
-    choices: templatesList
+    name: 'sass',
+    type: 'confirm',
+    message: 'Use Sass ?',
+    default: true
   });
 };
 
-const packages = () => {
-  return inquirer.prompt({
-    name: 'PACKAGES',
-    type: 'checkbox',
-    message: 'Select your packages:',
-    choices: packagesList
-  });
-};
-
-module.exports = { projectName, languages, templates, packages };
+module.exports = { projectName, useTypescript, useSass };

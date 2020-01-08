@@ -1,104 +1,113 @@
 const shell = require('shelljs');
 const chalk = require('chalk');
+const {
+  appJS,
+  appTestJS,
+  indexJS,
+  serviceWorkerJS,
+  setupTestsJS
+} = require('../templates/templateJS');
+const {
+  appTSX,
+  appTestTSX,
+  indexTSX,
+  reactAppEnvTS,
+  serviceWorkerTS,
+  setupTestsTS,
+  tsconfigJSON
+} = require('../templates/templateTS');
+const { appCSS, indexCSS } = require('../templates/templateCSS');
+const { appSCSS, indexSCSS } = require('../templates/templateSass');
 
-const restructuring = async (projectName, withTS, spinner) => {
+const getExtFiles = (withTS, withSass) => {
+  return {
+    component: withTS ? 'tsx' : 'js',
+    logic: withTS ? 'ts' : 'js',
+    style: withSass ? 'scss' : 'css'
+  };
+};
+
+const restructuring = async (projectName, withTS, withSass, spinner) => {
+  const extensionFiles = getExtFiles(withTS, withSass);
   spinner.start('Restructuring');
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     const commands = [];
 
-    // Move to project
+    // Move to project & Create all repository and files needed
     commands.push(shell.cd(`${projectName}`));
-    // Create folders
-    commands.push(shell.mkdir('-p', `src/components/App`));
 
-    if (!withTS) {
-      // Rename files
-      commands.push(shell.mv('src/App.js', 'src/App.component.js'));
-      commands.push(shell.mv('src/App.css', 'src/App.style.css'));
-      // Move files
+    // Delete all /src files
+    commands.push(shell.rm('-rf', [`src/*.js`, `src/*.css`]));
+
+    // Create all repository and files needed
+    commands.push(shell.mkdir('-p', 'src/components/App'));
+    commands.push(
+      shell.touch('-c', [
+        `src/index.${extensionFiles.component}`,
+        `src/index.${extensionFiles.style}`,
+        `src/components/App/App.component.${extensionFiles.component}`,
+        `src/components/App/App.style.${extensionFiles.style}`,
+        `src/components/App/App.test.${extensionFiles.component}`,
+        `src/serviceWorker.${extensionFiles.logic}`,
+        `src/setupTests.${extensionFiles.logic}`
+      ])
+    );
+
+    if (withTS) {
       commands.push(
-        shell.mv(
-          ['src/App.component.js', 'src/App.test.js', 'src/App.style.css'],
-          'src/components/App/'
-        )
+        shell.touch('-c', [
+          `tsconfig.json`,
+          `src/react-app-env.d.${extensionFiles.logic}`
+        ])
       );
-      // Change import location in index & App
+    }
+
+    // Add all contents in files
+    commands.push(
+      shell
+        .ShellString(withTS ? indexTSX(withSass) : indexJS(withSass))
+        .to(`src/index.${extensionFiles.component}`)
+    );
+    commands.push(
+      shell
+        .ShellString(withSass ? indexSCSS : indexCSS)
+        .to(`src/index.${extensionFiles.style}`)
+    );
+
+    commands.push(
+      shell
+        .ShellString(withTS ? appTSX(withSass) : appJS(withSass))
+        .to(`src/components/App/App.component.${extensionFiles.component}`)
+    );
+    commands.push(
+      shell
+        .ShellString(withSass ? appSCSS : appCSS)
+        .to(`src/components/App/App.style.${extensionFiles.style}`)
+    );
+    commands.push(
+      shell
+        .ShellString(withTS ? appTestTSX : appTestJS)
+        .to(`src/components/App/App.test.${extensionFiles.component}`)
+    );
+
+    commands.push(
+      shell
+        .ShellString(withTS ? serviceWorkerTS : serviceWorkerJS)
+        .to(`src/serviceWorker.${extensionFiles.logic}`)
+    );
+    commands.push(
+      shell
+        .ShellString(withTS ? setupTestsTS : setupTestsJS)
+        .to(`src/setupTests.${extensionFiles.logic}`)
+    );
+
+    if (withTS) {
       commands.push(
-        shell.sed(
-          '-i',
-          './App',
-          './components/App/App.component',
-          'src/index.js'
-        )
+        shell
+          .ShellString(reactAppEnvTS)
+          .to(`src/react-app-env.d.${extensionFiles.logic}`)
       );
-      commands.push(
-        shell.sed(
-          '-i',
-          './App',
-          './components/App/App.component',
-          'src/components/App/App.test.js'
-        )
-      );
-      commands.push(
-        shell.sed(
-          '-i',
-          './App.css',
-          './App.style.css',
-          'src/components/App/App.component.js'
-        )
-      );
-      commands.push(
-        shell.sed(
-          '-i',
-          './logo.svg',
-          '../../logo.svg',
-          'src/components/App/App.component.js'
-        )
-      );
-    } else {
-      // Rename files
-      commands.push(shell.mv('src/App.tsx', 'src/App.component.tsx'));
-      commands.push(shell.mv('src/App.css', 'src/App.style.css'));
-      // Move files
-      commands.push(
-        shell.mv(
-          ['src/App.component.tsx', 'src/App.test.tsx', 'src/App.style.css'],
-          'src/components/App/'
-        )
-      );
-      // Change import location in index & App
-      commands.push(
-        shell.sed(
-          '-i',
-          './App',
-          './components/App/App.component',
-          'src/index.tsx'
-        )
-      );
-      commands.push(
-        shell.sed(
-          '-i',
-          './App',
-          './components/App/App.component',
-          'src/components/App/App.test.tsx'
-        )
-      );
-      commands.push(
-        shell.sed(
-          '-i',
-          './App.css',
-          './App.style.css',
-          'src/components/App/App.component.tsx'
-        )
-      );
-      commands.push(
-        shell.sed(
-          '-i',
-          './logo.svg',
-          '../../logo.svg',
-          'src/components/App/App.component.tsx'
-        )
-      );
+      commands.push(shell.ShellString(tsconfigJSON).to(`tsconfig.json`));
     }
 
     // Print errors but continue install

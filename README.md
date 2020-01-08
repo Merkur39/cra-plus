@@ -10,4 +10,4 @@ Simply use the "npx cra-plus" command in your terminal where you want to create 
 
 - ~~Typescript choice~~,
 - ~~Auto-commit new architecture~~
-- Add templates choice (in Progress)
+- Add CLI for create another components, services, etc (in Progress)
