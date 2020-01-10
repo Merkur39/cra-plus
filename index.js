@@ -40,18 +40,8 @@ const createProject = async (projectName, withTS, withSass) => {
   installProjectSuccess(projectName);
   exit(0);
 };
-// const cmdNpm = test =>
-//   `npm i -D ${test.map(p => `${p.prefix}${p.name}`)}`.replace(/,/g, ' ');
+
 const initialize = (name, opts) => {
-  // const test = [
-  //   { name: 'typescript', prefix: '' },
-  //   { name: 'jest', prefix: '@types/' },
-  //   { name: 'node', prefix: '@types/' },
-  //   { name: 'react', prefix: '@types/' },
-  //   { name: 'react-dom', prefix: '@types/' },
-  // ];
-  // console.log(cmdNpm(test));
-  // return;
   if (!name.length) {
     return installFailed(
       'Initialize failed, please add name of your Project.',
