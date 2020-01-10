@@ -14,18 +14,17 @@ serviceWorker.unregister();
 
 const appJS = withSass => `import React from 'react';
 import logo from '../../logo.svg';
-${withSass ? '' : "import './App.style.css';"}
-
+${withSass ? '' : "import './App.style.css';\n"}
 const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div className="app">
+      <header className="app-header">
+        <img src={logo} className="app-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Edit <code>src/components/App/App.component.tsx</code> and save to reload.
         </p>
         <a
-          className="App-link"
+          className="app-link"
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
@@ -40,6 +39,35 @@ const App = () => {
 export default App;
 `;
 
+const appClassJS = withSass => `import React from 'react';
+import logo from '../../logo.svg';
+${withSass ? '' : "import './App.style.css';\n"}
+class App extends React.Component {
+  render() {
+    return (
+      <div className='app'>
+        <header className='app-header'>
+          <img src={logo} className='app-logo' alt='logo' />
+          <p>
+            Edit <code>src/components/App/App.component.tsx</code> and save to reload.
+          </p>
+          <a
+            className='app-link'
+            href='https://reactjs.org'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            Learn React
+          </a>
+        </header>
+      </div>
+    );
+  }
+}
+
+export default App;
+`;
+
 const appTestJS = `import React from 'react';
 import { render } from '@testing-library/react';
 import App from './App.component';
@@ -47,6 +75,45 @@ import App from './App.component';
 test('renders learn react link', () => {
   const { getByText } = render(<App />);
   const linkElement = getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+`;
+
+const newComponentJS = (name, withSass) => `import React from 'react';
+${withSass ? '' : `import './${name}.style.css';\n`}
+const ${name} = () => {
+  return (
+    <div className="${name.toLowerCase()}">
+      ${name} component
+    </div>
+  );
+}
+
+export default ${name};
+`;
+
+const newComponentClassJS = (name, withSass) => `import React from 'react';
+${withSass ? '' : `import './${name}.style.css';\n`}
+class ${name} extends React.Component {
+  render() {
+    return (
+      <div className="${name.toLowerCase()}">
+        ${name} component
+      </div>
+    );
+  }
+}
+
+export default ${name};
+`;
+
+const newComponentTestJS = name => `import React from 'react';
+import { render } from '@testing-library/react';
+import ${name} from './${name}.component';
+
+test('renders learn react link', () => {
+  const { getByText } = render(<${name} />);
+  const linkElement = getByText(/${name} component/);
   expect(linkElement).toBeInTheDocument();
 });
 `;
@@ -197,4 +264,14 @@ const setupTestsJS = `// jest-dom adds custom jest matchers for asserting on DOM
 import '@testing-library/jest-dom/extend-expect';
 `;
 
-module.exports = { indexJS, appJS, appTestJS, serviceWorkerJS, setupTestsJS };
+module.exports = {
+  indexJS,
+  appJS,
+  appClassJS,
+  appTestJS,
+  newComponentJS,
+  newComponentClassJS,
+  newComponentTestJS,
+  serviceWorkerJS,
+  setupTestsJS
+};

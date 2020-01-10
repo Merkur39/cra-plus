@@ -1,5 +1,5 @@
 const shell = require('shelljs');
-const chalk = require('chalk');
+const { installFailed } = require('./messages');
 
 const addSass = async (spinner, withTS) => {
   spinner.start('Install node-sass');
@@ -9,9 +9,7 @@ const addSass = async (spinner, withTS) => {
       { silent: true },
       (code, stdout, stderr) => {
         if (code !== 0) {
-          spinner.stop();
-          shell.echo(chalk.red.bold(`${stderr}`));
-          shell.exit(1);
+          installFailed(stderr, spinner);
         } else {
           spinner.succeed();
           return resolve(stdout);

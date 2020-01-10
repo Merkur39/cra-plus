@@ -13,22 +13,22 @@ code {
 }
 `;
 
-const appCSS = `.App {
+const appCSS = `.app {
   text-align: center;
 }
 
-.App-logo {
+.app-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
+  .app-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
 
-.App-header {
+.app-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -39,7 +39,7 @@ const appCSS = `.App {
   color: white;
 }
 
-.App-link {
+.app-link {
   color: #61dafb;
 }
 
@@ -53,4 +53,9 @@ const appCSS = `.App {
 }
 `;
 
-module.exports = { indexCSS, appCSS };
+const newComponentCSS = name => `.${name.toLowerCase()} {
+  text-align: center;
+}
+`;
+
+module.exports = { indexCSS, appCSS, newComponentCSS };

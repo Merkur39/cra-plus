@@ -1,4 +1,6 @@
-const indexSCSS = `body {
+const addImportSCSS = name => `\n@import './components/${name}/${name}.style.scss';`;
+
+const indexSCSS = name => `body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -12,13 +14,12 @@ const indexSCSS = `body {
   }
 }
 
-@import './components/App/App.style.scss';
-`;
+${addImportSCSS(name)}`;
 
-const appSCSS = `.App {
+const appSCSS = `.app {
   text-align: center;
 
-  .App-header {
+  .app-header {
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
@@ -28,19 +29,19 @@ const appSCSS = `.App {
     font-size: calc(10px + 2vmin);
     color: white;
 
-    .App-logo {
+    .app-logo {
       height: 40vmin;
       pointer-events: none;
     }
 
-    .App-link {
+    .app-link {
       color: #61dafb;
     }
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
+  .app-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
@@ -55,4 +56,9 @@ const appSCSS = `.App {
 }
 `;
 
-module.exports = { indexSCSS, appSCSS };
+const newComponentSCSS = name => `.${name.toLowerCase()} {
+  text-align: center;
+}
+`;
+
+module.exports = { addImportSCSS, indexSCSS, appSCSS, newComponentSCSS };

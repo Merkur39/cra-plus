@@ -1,5 +1,5 @@
-const shell = require('shelljs');
-const chalk = require('chalk');
+const { cd, mkdir, rm, ShellString, touch } = require('shelljs');
+const log = require('./cliColors');
 const {
   appJS,
   appTestJS,
@@ -18,108 +18,82 @@ const {
 } = require('../templates/templateTS');
 const { appCSS, indexCSS } = require('../templates/templateCSS');
 const { appSCSS, indexSCSS } = require('../templates/templateSass');
-
-const getExtFiles = (withTS, withSass) => {
-  return {
-    component: withTS ? 'tsx' : 'js',
-    logic: withTS ? 'ts' : 'js',
-    style: withSass ? 'scss' : 'css'
-  };
-};
+const crapConfig = require('../templates/templateCrapConfig');
+const { getConfig } = require('./utils');
+const { installFailed } = require('./messages');
 
 const restructuring = async (projectName, withTS, withSass, spinner) => {
-  const extensionFiles = getExtFiles(withTS, withSass);
   spinner.start('Restructuring');
-  return new Promise(resolve => {
-    const commands = [];
 
-    // Move to project & Create all repository and files needed
-    commands.push(shell.cd(`${projectName}`));
+  const commands = [];
 
-    // Delete all /src files
-    commands.push(shell.rm('-rf', [`src/*.js`, `src/*.css`]));
+  // Move to project & Create all repository and files needed
+  commands.push(cd(`${projectName}`));
 
-    // Create all repository and files needed
-    commands.push(shell.mkdir('-p', 'src/components/App'));
+  // Delete all /src files
+  commands.push(rm('-rf', [`src/*.js`, `src/*.css`]));
+
+  // Create file of config project
+  commands.push(
+    touch('-c', 'crapConfig.json'),
+    ShellString(crapConfig(projectName, withTS, withSass)).to('crapConfig.json')
+  );
+
+  const config = getConfig();
+  if (!config) {
+    return installFailed('Configuration file "CrapConfig.json" not found', spinner);
+  }
+
+  // Create all repository and files needed
+  commands.push(
+    mkdir('-p', 'src/components/App'),
+    touch('-c', [
+      `src/index.${config.component}`,
+      `src/index.${config.style}`,
+      `src/components/App/App.component.${config.component}`,
+      `src/components/App/App.style.${config.style}`,
+      `src/components/App/App.test.${config.component}`,
+      `src/serviceWorker.${config.logic}`,
+      `src/setupTests.${config.logic}`
+    ])
+  );
+
+  if (withTS) {
+    commands.push(touch('-c', [`tsconfig.json`, `src/react-app-env.d.${config.logic}`]));
+  }
+
+  // Add all contents in files
+  commands.push(
+    ShellString(withTS ? indexTSX(withSass) : indexJS(withSass)).to(
+      `src/index.${config.component}`
+    ),
+    ShellString(withSass ? indexSCSS('App') : indexCSS).to(`src/index.${config.style}`),
+    ShellString(withTS ? appTSX(withSass) : appJS(withSass)).to(
+      `src/components/App/App.component.${config.component}`
+    ),
+    ShellString(withSass ? appSCSS : appCSS).to(`src/components/App/App.style.${config.style}`),
+    ShellString(withTS ? appTestTSX : appTestJS).to(
+      `src/components/App/App.test.${config.component}`
+    ),
+    ShellString(withTS ? serviceWorkerTS : serviceWorkerJS).to(`src/serviceWorker.${config.logic}`),
+    ShellString(withTS ? setupTestsTS : setupTestsJS).to(`src/setupTests.${config.logic}`)
+  );
+
+  if (withTS) {
     commands.push(
-      shell.touch('-c', [
-        `src/index.${extensionFiles.component}`,
-        `src/index.${extensionFiles.style}`,
-        `src/components/App/App.component.${extensionFiles.component}`,
-        `src/components/App/App.style.${extensionFiles.style}`,
-        `src/components/App/App.test.${extensionFiles.component}`,
-        `src/serviceWorker.${extensionFiles.logic}`,
-        `src/setupTests.${extensionFiles.logic}`
-      ])
+      ShellString(reactAppEnvTS).to(`src/react-app-env.d.${config.logic}`),
+      ShellString(tsconfigJSON).to(`tsconfig.json`)
     );
+  }
 
-    if (withTS) {
-      commands.push(
-        shell.touch('-c', [
-          `tsconfig.json`,
-          `src/react-app-env.d.${extensionFiles.logic}`
-        ])
-      );
+  // Print errors but continue install
+  for (const command of commands) {
+    if (command.code !== 0 && command.stderr !== undefined) {
+      log.error(`${command.stderr}`);
     }
+  }
 
-    // Add all contents in files
-    commands.push(
-      shell
-        .ShellString(withTS ? indexTSX(withSass) : indexJS(withSass))
-        .to(`src/index.${extensionFiles.component}`)
-    );
-    commands.push(
-      shell
-        .ShellString(withSass ? indexSCSS : indexCSS)
-        .to(`src/index.${extensionFiles.style}`)
-    );
-
-    commands.push(
-      shell
-        .ShellString(withTS ? appTSX(withSass) : appJS(withSass))
-        .to(`src/components/App/App.component.${extensionFiles.component}`)
-    );
-    commands.push(
-      shell
-        .ShellString(withSass ? appSCSS : appCSS)
-        .to(`src/components/App/App.style.${extensionFiles.style}`)
-    );
-    commands.push(
-      shell
-        .ShellString(withTS ? appTestTSX : appTestJS)
-        .to(`src/components/App/App.test.${extensionFiles.component}`)
-    );
-
-    commands.push(
-      shell
-        .ShellString(withTS ? serviceWorkerTS : serviceWorkerJS)
-        .to(`src/serviceWorker.${extensionFiles.logic}`)
-    );
-    commands.push(
-      shell
-        .ShellString(withTS ? setupTestsTS : setupTestsJS)
-        .to(`src/setupTests.${extensionFiles.logic}`)
-    );
-
-    if (withTS) {
-      commands.push(
-        shell
-          .ShellString(reactAppEnvTS)
-          .to(`src/react-app-env.d.${extensionFiles.logic}`)
-      );
-      commands.push(shell.ShellString(tsconfigJSON).to(`tsconfig.json`));
-    }
-
-    // Print errors but continue install
-    for (const command of commands) {
-      if (command.code !== 0) {
-        shell.echo(chalk.red.bold(`${command.stderr}`));
-      }
-    }
-
-    spinner.succeed();
-    resolve(commands);
-  });
+  spinner.succeed();
 };
 
 module.exports = restructuring;

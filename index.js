@@ -1,39 +1,26 @@
 #!/usr/bin/env node
 
-// let program = require('commander');
-const chalk = require('chalk');
-const figlet = require('figlet');
-const shell = require('shelljs');
+const { existsSync } = require('fs');
+const program = require('commander');
+const { exit } = require('shelljs');
 const ora = require('ora');
 const spinner = ora();
 spinner.color = 'green';
 spinner.spinner = 'dots';
 
-const { projectName, useTypescript, useSass } = require('./libs/choices');
-// const packagesList = require('./constants/packages');
+const package = require('./package');
 const addCreateReactApp = require('./libs/addCreateReactApp');
 const addCommit = require('./libs/addCommit');
 const restructuring = require('./libs/restructuring');
 const addSass = require('./libs/addSass');
 const addTypescript = require('./libs/addTypescript');
-
-const init = () => {
-  shell.echo(
-    chalk.green(
-      figlet.textSync('REACT  STARTER', {
-        horizontalLayout: 'default',
-        verticalLayout: 'default'
-      })
-    )
-  );
-};
-
-const sendMessage = createdProjectMessage => {
-  shell.echo(chalk.green.bold(`Done! ${createdProjectMessage}`));
-};
+const addComponent = require('./libs/addComponent');
+const { capitalize } = require('./libs/utils');
+const { installProjectSuccess, installFailed } = require('./libs/messages');
 
 const createProject = async (projectName, withTS, withSass) => {
-  const createApp = await addCreateReactApp(projectName, withTS, spinner);
+  await addCreateReactApp(projectName, spinner);
+  await restructuring(projectName, withTS, withSass, spinner);
 
   if (withSass) {
     await addSass(spinner, withTS);
@@ -42,42 +29,49 @@ const createProject = async (projectName, withTS, withSass) => {
     await addTypescript(spinner);
   }
 
-  await restructuring(projectName, withTS, withSass, spinner);
-
-  return createApp;
-};
-
-const run = async () => {
-  let createdProjectMessage;
-
-  // Show Intro
-  init();
-
-  // Get Choices
-  const { project_name } = await projectName();
-  const { ts } = await useTypescript();
-  const { sass } = await useSass();
-
-  createdProjectMessage = await createProject(project_name, ts, sass);
-
   // New commit after customization
-  // await addCommit(spinner, project_name);
+  await addCommit(projectName, spinner);
 
-  if (spinner.isSpinning) {
+  if (spinner && spinner.isSpinning) {
     spinner.stop();
   }
-  // show success message
-  sendMessage(createdProjectMessage);
-  shell.exit(0);
+
+  // Show success message
+  installProjectSuccess(projectName);
+  exit(0);
 };
 
-run();
+const initialize = (name, opts) => {
+  if (!name.length) {
+    return installFailed('Initialize failed, please add name of your Project.', spinner);
+  }
 
-// program
-//   .command('gc <component>')
-//   .option('-n, --nofolder', 'Do not wrap component in folder')
-//   .option('-s, --style', 'With stylesheet')
-//   .option('-cl, --class', 'Create class component')
-//   .action(createComponent);
+  // Get Formatted Name
+  const nameFormatted = name.join(' ').replace(/(-|\s)/g, '_');
 
-// program.parse(process.argv);
+  if (existsSync(`./${nameFormatted}`)) {
+    return installFailed('Initialize failed, name of your Project already exist.', spinner);
+  }
+
+  createProject(nameFormatted, !!opts.typescript, !!opts.sass);
+};
+
+// Create App
+program
+  .version(`v${package.version}`)
+  .command('new [name...]')
+  .description('Create New Application')
+  .option('--typescript', 'Generate Typescript Application')
+  .option('--sass', 'With Preprocessor SASS')
+  .action(initialize);
+
+// Create Component
+program
+  .command('component <component>')
+  .alias('c')
+  .description('Create new component')
+  .option('--skipTests', 'Do not create test file for this component')
+  .option('--class', 'Create class component')
+  .action((componentName, opts) => addComponent(capitalize(componentName), opts));
+
+program.parse(process.argv);

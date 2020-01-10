@@ -1,21 +1,16 @@
 const shell = require('shelljs');
-const chalk = require('chalk');
 const { PackagesTypescriptList } = require('../constants/packages');
+const { installFailed } = require('./messages');
 
 const cmdNpm = () =>
-  `npm i ${PackagesTypescriptList.map(p => `${p.prefix}${p.name}`)}`.replace(
-    /,/g,
-    ' '
-  );
+  `npm i ${PackagesTypescriptList.map(p => `${p.prefix}${p.name}`)}`.replace(/,/g, ' ');
 
 const addPackages = async spinner => {
   spinner.start('Install Typescript & Dependencies');
   return new Promise(resolve => {
     shell.exec(cmdNpm(), { silent: true }, (code, stdout, stderr) => {
       if (code !== 0) {
-        spinner.stop();
-        shell.echo(chalk.red.bold(`${stderr}`));
-        shell.exit(1);
+        installFailed(stderr, spinner);
       } else {
         spinner.succeed();
         return resolve(stdout);
