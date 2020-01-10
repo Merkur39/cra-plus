@@ -3,7 +3,7 @@ const { PackagesTypescriptList } = require('../constants/packages');
 const { installFailed } = require('./messages');
 
 const cmdNpm = () =>
-  `npm i ${PackagesTypescriptList.map(p => `${p.prefix}${p.name}`)}`.replace(/,/g, ' ');
+  `${PackagesTypescriptList.map(p => `npm i ${p.prefix}${p.name}`)}`.replace(/,/g, ' ');
 
 const addPackages = async spinner => {
   spinner.start('Install Typescript & Dependencies');
