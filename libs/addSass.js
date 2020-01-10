@@ -5,7 +5,7 @@ const addSass = async (spinner, withTS) => {
   spinner.start('Install node-sass');
   return new Promise(resolve => {
     shell.exec(
-      `npm i -S node-sass ${withTS ? 'npm i -D @types/node-sass' : ''}`,
+      `npm i -D node-sass ${withTS ? '@types/node-sass' : ''}`,
       { silent: true },
       (code, stdout, stderr) => {
         if (code !== 0) {
@@ -14,7 +14,7 @@ const addSass = async (spinner, withTS) => {
           spinner.succeed();
           return resolve(stdout);
         }
-      }
+      },
     );
   });
 };

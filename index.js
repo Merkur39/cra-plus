@@ -40,17 +40,33 @@ const createProject = async (projectName, withTS, withSass) => {
   installProjectSuccess(projectName);
   exit(0);
 };
-
+// const cmdNpm = test =>
+//   `npm i -D ${test.map(p => `${p.prefix}${p.name}`)}`.replace(/,/g, ' ');
 const initialize = (name, opts) => {
+  // const test = [
+  //   { name: 'typescript', prefix: '' },
+  //   { name: 'jest', prefix: '@types/' },
+  //   { name: 'node', prefix: '@types/' },
+  //   { name: 'react', prefix: '@types/' },
+  //   { name: 'react-dom', prefix: '@types/' },
+  // ];
+  // console.log(cmdNpm(test));
+  // return;
   if (!name.length) {
-    return installFailed('Initialize failed, please add name of your Project.', spinner);
+    return installFailed(
+      'Initialize failed, please add name of your Project.',
+      spinner,
+    );
   }
 
   // Get Formatted Name
   const nameFormatted = name.join(' ').replace(/(-|\s)/g, '_');
 
   if (existsSync(`./${nameFormatted}`)) {
-    return installFailed('Initialize failed, name of your Project already exist.', spinner);
+    return installFailed(
+      'Initialize failed, name of your Project already exist.',
+      spinner,
+    );
   }
 
   createProject(nameFormatted, !!opts.typescript, !!opts.sass);
@@ -72,6 +88,8 @@ program
   .description('Create new component')
   .option('--skipTests', 'Do not create test file for this component')
   .option('--class', 'Create class component')
-  .action((componentName, opts) => addComponent(capitalize(componentName), opts));
+  .action((componentName, opts) =>
+    addComponent(capitalize(componentName), opts),
+  );
 
 program.parse(process.argv);
