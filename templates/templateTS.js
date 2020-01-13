@@ -1,8 +1,8 @@
 const indexTSX = withSass => `import React from 'react';
 import ReactDOM from 'react-dom';
-${withSass ? "import './index.scss';" : "import './index.css';"}
+${withSass ? "import './styles/index.scss';" : "import './styles/index.css';"}
 import App from './components/App/App.component';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './config/serviceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
@@ -13,7 +13,7 @@ serviceWorker.unregister();
 `;
 
 const appTSX = withSass => `import React from 'react';
-import logo from '../../logo.svg';
+import logo from '../../assets/logo.svg';
 ${withSass ? '' : "import './App.style.css';\n"}
 const App: React.FC = () => {
   return (
@@ -40,7 +40,7 @@ export default App;
 `;
 
 const appClassTSX = withSass => `import React from 'react';
-import logo from '../../logo.svg';
+import logo from '../../assets/logo.svg';
 ${withSass ? '' : "import './App.style.css';\n"}
 class App extends React.Component {
   render() {

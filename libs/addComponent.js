@@ -62,10 +62,12 @@ const createNewComponent = async (componentName, opts) => {
     );
 
     if (config.withSass) {
-      const importAlreadyExist = cat('src/index.scss').includes(addImportSCSS(componentName));
+      const importAlreadyExist = cat('src/styles/index.scss').includes(
+        addImportSCSS(componentName)
+      );
 
       if (!importAlreadyExist) {
-        commands.push(ShellString(addImportSCSS(componentName)).toEnd('src/index.scss'));
+        commands.push(ShellString(addImportSCSS(componentName)).toEnd('src/styles/index.scss'));
       }
     }
 

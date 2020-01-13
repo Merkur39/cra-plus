@@ -1,4 +1,4 @@
-const { cd, mkdir, rm, ShellString, touch } = require('shelljs');
+const { cd, mkdir, rm, ShellString, touch, mv } = require('shelljs');
 const log = require('./cliColors');
 const {
   appJS,
@@ -46,16 +46,17 @@ const restructuring = async (projectName, withTS, withSass, spinner) => {
 
   // Create all repository and files needed
   commands.push(
-    mkdir('-p', ['src/components/App', 'src/assets']),
+    mkdir('-p', ['src/components/App', 'src/assets', 'src/styles', 'src/config']),
     touch('-c', [
       `src/index.${config.component}`,
-      `src/index.${config.style}`,
+      `src/styles/index.${config.style}`,
       `src/components/App/App.component.${config.component}`,
       `src/components/App/App.style.${config.style}`,
       `src/components/App/App.test.${config.component}`,
       `src/serviceWorker.${config.logic}`,
       `src/setupTests.${config.logic}`
-    ])
+    ]),
+    mv('logo.svg', 'src/assets/')
   );
 
   if (withTS) {
@@ -67,7 +68,7 @@ const restructuring = async (projectName, withTS, withSass, spinner) => {
     ShellString(withTS ? indexTSX(withSass) : indexJS(withSass)).to(
       `src/index.${config.component}`
     ),
-    ShellString(withSass ? indexSCSS('App') : indexCSS).to(`src/index.${config.style}`),
+    ShellString(withSass ? indexSCSS('App') : indexCSS).to(`src/styles/index.${config.style}`),
     ShellString(withTS ? appTSX(withSass) : appJS(withSass)).to(
       `src/components/App/App.component.${config.component}`
     ),
