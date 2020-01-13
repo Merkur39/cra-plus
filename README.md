@@ -15,6 +15,7 @@ Commands:
 ```
 crap new <name> [options App]                     // Create New Application
 crap component|c <component> [options Component]  // Create new Component
+crap service|s <service> [options Service]  // Create new Service
 ```
 
 Options Application:
@@ -31,8 +32,14 @@ Options Component:
 --class        // Create Class Component
 ```
 
+Options Service:
+
+```
+--skipTests    // Don't create test file for this service
+```
+
 # Soon...
 
 - ~~Typescript choice~~,
 - ~~Auto-commit new architecture~~
-- Add CLI for create another ~~components~~, services, etc (in Progress)
+- Add CLI for create another ~~components~~, ~~services~~, interfaces etc (in Progress)

@@ -118,6 +118,17 @@ test('renders learn react link', () => {
 });
 `;
 
+const newServiceJS = name => `export const ${name} = () => {
+  return 'Hello service ${name}!';
+};
+`;
+const newServiceTestJS = name => `import { ${name} } from './${name}.service';
+
+test('Return string', () => {
+  expect(${name}()).toEqual('Hello service ${name}!');
+});
+`;
+
 const serviceWorkerJS = `// This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -272,6 +283,8 @@ module.exports = {
   newComponentJS,
   newComponentClassJS,
   newComponentTestJS,
+  newServiceJS,
+  newServiceTestJS,
   serviceWorkerJS,
   setupTestsJS
 };

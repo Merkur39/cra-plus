@@ -3,6 +3,8 @@ const { mkdir, touch, ShellString } = require('shelljs');
 const log = require('./cliColors');
 const { installFailed, installServiceSuccess } = require('./messages');
 const { getConfig } = require('./utils');
+const { newServiceTS, newServiceTestTS } = require('../templates/templateTS');
+const { newServiceJS, newServiceTestJS } = require('../templates/templateJS');
 
 const createNewService = (serviceName, servicesDirAlreadyExist, opts) => {
   return new Promise(resolve => {
@@ -17,18 +19,21 @@ const createNewService = (serviceName, servicesDirAlreadyExist, opts) => {
       commands.push(mkdir('-p', `src/services/${serviceName}`));
     }
 
-    commands.push(touch('-c', `src/services/${serviceName}/${serviceName}.service.js`));
+    commands.push(
+      touch('-c', `src/services/${serviceName}/${serviceName}.service.${config.logic}`)
+    );
 
-    console.log(opts);
     if (!opts.skipTests) {
       commands.push(
-        touch('-c', `src/services/${serviceName}/${serviceName}.test.js`),
-        ShellString('test test test').toEnd(`src/services/${serviceName}/${serviceName}.test.js`)
+        touch('-c', `src/services/${serviceName}/${serviceName}.test.${config.logic}`),
+        ShellString(
+          config.withTS ? newServiceTestTS(serviceName) : newServiceTestJS(serviceName)
+        ).toEnd(`src/services/${serviceName}/${serviceName}.test.${config.logic}`)
       );
     }
     commands.push(
-      ShellString('service service service').toEnd(
-        `src/services/${serviceName}/${serviceName}.service.js`
+      ShellString(config.withTS ? newServiceTS(serviceName) : newServiceJS(serviceName)).toEnd(
+        `src/services/${serviceName}/${serviceName}.service.${config.logic}`
       )
     );
 

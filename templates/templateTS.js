@@ -118,6 +118,17 @@ test('renders learn react link', () => {
 });
 `;
 
+const newServiceTS = name => `export const ${name} = (): string => {
+  return 'Hello service ${name}!';
+};
+`;
+const newServiceTestTS = name => `import { ${name} } from './${name}.service';
+
+test('Return string', () => {
+  expect(${name}()).toEqual('Hello service ${name}!');
+});
+`;
+
 const reactAppEnvTS = `/// <reference types="react-scripts" />`;
 
 const serviceWorkerTS = `// This optional code is used to register a service worker.
@@ -309,6 +320,8 @@ module.exports = {
   newComponentTS,
   newComponentClassTS,
   newComponentTestTS,
+  newServiceTS,
+  newServiceTestTS,
   serviceWorkerTS,
   setupTestsTS,
   reactAppEnvTS,
