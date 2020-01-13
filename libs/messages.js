@@ -31,6 +31,12 @@ const installComponentSuccess = componentName =>
     { color: 'white', str: `Created Component ${componentName}` }
   ]);
 
+const installServiceSuccess = serviceName =>
+  log.multiple([
+    { color: 'green', str: '\nSuccess!' },
+    { color: 'white', str: `Created Service ${serviceName}` }
+  ]);
+
 const installFailed = (err, spinner = null) => {
   if (spinner && spinner.isSpinning) {
     spinner.fail(log.error(`Error : ${err}`));
@@ -40,4 +46,9 @@ const installFailed = (err, spinner = null) => {
   exit(1);
 };
 
-module.exports = { installProjectSuccess, installComponentSuccess, installFailed };
+module.exports = {
+  installProjectSuccess,
+  installComponentSuccess,
+  installServiceSuccess,
+  installFailed
+};

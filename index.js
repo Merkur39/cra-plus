@@ -15,7 +15,8 @@ const restructuring = require('./libs/restructuring');
 const addSass = require('./libs/addSass');
 const addTypescript = require('./libs/addTypescript');
 const addComponent = require('./libs/addComponent');
-const { capitalize } = require('./libs/utils');
+const addService = require('./libs/addService');
+const { formatingFileName } = require('./libs/utils');
 const { installProjectSuccess, installFailed } = require('./libs/messages');
 
 const createProject = async (projectName, withTS, withSass) => {
@@ -43,20 +44,14 @@ const createProject = async (projectName, withTS, withSass) => {
 
 const initialize = (name, opts) => {
   if (!name.length) {
-    return installFailed(
-      'Initialize failed, please add name of your Project.',
-      spinner,
-    );
+    return installFailed('Initialize failed, please add name of your Project.', spinner);
   }
 
   // Get Formatted Name
   const nameFormatted = name.join(' ').replace(/(-|\s)/g, '_');
 
   if (existsSync(`./${nameFormatted}`)) {
-    return installFailed(
-      'Initialize failed, name of your Project already exist.',
-      spinner,
-    );
+    return installFailed('Initialize failed, name of your Project already exist.', spinner);
   }
 
   createProject(nameFormatted, !!opts.typescript, !!opts.sass);
@@ -78,8 +73,14 @@ program
   .description('Create new component')
   .option('--skipTests', 'Do not create test file for this component')
   .option('--class', 'Create class component')
-  .action((componentName, opts) =>
-    addComponent(capitalize(componentName), opts),
-  );
+  .action((componentName, opts) => addComponent(formatingFileName(componentName), opts));
+
+// Create Service
+program
+  .command('service [name...]')
+  .alias('s')
+  .description('Create New Service')
+  .option('--skipTests', 'Do not create test file for this service')
+  .action((serviceName, opts) => addService(formatingFileName(serviceName), opts));
 
 program.parse(process.argv);

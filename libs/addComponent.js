@@ -99,7 +99,9 @@ const initNewComponent = async (componentName, opts) => {
     );
   }
   if (componentAlreadyExist) {
-    return installFailed(`A Component with the same name (${componentName}) already exists`);
+    return installFailed(
+      `Creation failed, name of your Component (${componentName}) already exists.`
+    );
   }
   return await createNewComponent(componentName, options);
 };

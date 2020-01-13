@@ -46,7 +46,7 @@ const restructuring = async (projectName, withTS, withSass, spinner) => {
 
   // Create all repository and files needed
   commands.push(
-    mkdir('-p', 'src/components/App'),
+    mkdir('-p', ['src/components/App', 'src/assets']),
     touch('-c', [
       `src/index.${config.component}`,
       `src/index.${config.style}`,

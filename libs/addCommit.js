@@ -5,7 +5,7 @@ const addCommit = async (projectName, spinner) => {
   spinner.start('Initial commit');
   return new Promise(resolve => {
     exec(
-      `git add . && git --amend -m "Init starter project: ${projectName}"`,
+      `git add . && git commit --amend -m "Init starter project: ${projectName}"`,
       { silent: true },
       (code, stdout, stderr) => {
         if (code !== 0) {
