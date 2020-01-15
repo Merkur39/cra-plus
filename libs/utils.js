@@ -1,5 +1,7 @@
 const { installFailed } = require('./messages');
-const { exit } = require('shelljs');
+const { exit, ShellString } = require('shelljs');
+const crapConfig = require('../templates/templateCrapConfig');
+const log = require('./log');
 
 /**
  * Capitalize string
@@ -23,36 +25,57 @@ const formatingFileName = str => {
     exit(1);
   }
 
-  let serviceNameFormatted;
+  let nameFormatted;
   if (typeof str === 'object' && typeof str[0] === 'string') {
-    serviceNameFormatted = str.join(' ').replace(/(_|-|\s)/g, ' ');
+    nameFormatted = str.join(' ').replace(/(_|-|\s)/g, ' ');
   }
 
-  const newStr = serviceNameFormatted.replace(
+  return (nameFormatted || str).replace(
     /(\w+)(?:\s+|$)/g,
     (_, txt) => `${txt.charAt(0).toUpperCase()}${txt.substr(1)}`
   );
-
-  return `${newStr.charAt(0).toLowerCase()}${newStr.substr(1)}`;
 };
 
 /**
- * Get project configuration in crapConfig.json file
- * If not exist, return null
+ * Get project configuration
+ * @param {boolean} full "true" or nothing return full configuration | "false" return just crapConfig file
  */
-const getConfig = () => {
+const getConfig = (full = true) => {
   const config = require(process.cwd() + '/crapConfig.json');
 
   if (config) {
-    return {
+    const crapConfig = {
+      projectName: config.project.projectName,
       withTS: config.project.withTS,
       withSass: config.project.withSass,
+      withClass: config.project.withClass
+    };
+    const extensionFileConfig = {
       logic: config.project.withTS ? 'ts' : 'js',
       component: config.project.withTS ? 'tsx' : 'jsx',
       style: config.project.withSass ? 'scss' : 'css'
     };
+
+    if (full) {
+      return { ...crapConfig, ...extensionFileConfig };
+    }
+
+    return crapConfig;
   }
   return null;
 };
 
-module.exports = { capitalize, getConfig, formatingFileName };
+const stopGenerateClass = () => {
+  const config = getConfig(false);
+
+  if (config && config.withClass) {
+    config.withClass = false;
+    ShellString(crapConfig(config)).to('crapConfig.json');
+    log.multiple([
+      { color: 'green', str: '\nSuccess!' },
+      { color: 'white', str: 'Configuration file has been changed' }
+    ]);
+  }
+};
+
+module.exports = { capitalize, getConfig, formatingFileName, stopGenerateClass };

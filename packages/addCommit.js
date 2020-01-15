@@ -1,5 +1,5 @@
 const { exec } = require('shelljs');
-const { installFailed } = require('./messages');
+const { installFailed } = require('../libs/messages');
 
 const addCommit = async (projectName, spinner) => {
   spinner.start('Initial commit');
@@ -14,7 +14,7 @@ const addCommit = async (projectName, spinner) => {
           spinner.succeed();
           return resolve(stdout);
         }
-      },
+      }
     );
   });
 };

@@ -1,5 +1,5 @@
 const { exit } = require('shelljs');
-const log = require('./cliColors');
+const log = require('./log');
 
 const installProjectSuccess = projectName => (
   log.multiple([

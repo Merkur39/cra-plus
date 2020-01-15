@@ -8,25 +8,25 @@ const spinner = ora();
 spinner.color = 'green';
 spinner.spinner = 'dots';
 
-const package = require('./package');
-const addCreateReactApp = require('./libs/addCreateReactApp');
-const addCommit = require('./libs/addCommit');
-const restructuring = require('./libs/restructuring');
-const addSass = require('./libs/addSass');
-const addTypescript = require('./libs/addTypescript');
-const addComponent = require('./libs/addComponent');
-const addService = require('./libs/addService');
-const { formatingFileName } = require('./libs/utils');
+const package = require('./package.json');
+const addCreateReactApp = require('./packages/addCreateReactApp');
+const addCommit = require('./packages/addCommit');
+const restructuring = require('./commandLines/restructuring');
+const addSass = require('./packages/addSass');
+const addTypescript = require('./packages/addTypescript');
+const addComponent = require('./commandLines/addComponent');
+const addService = require('./commandLines/addService');
+const { formatingFileName, stopGenerateClass } = require('./libs/utils');
 const { installProjectSuccess, installFailed } = require('./libs/messages');
 
-const createProject = async (projectName, withTS, withSass) => {
+const createProject = async (projectName, opts) => {
   await addCreateReactApp(projectName, spinner);
-  await restructuring(projectName, withTS, withSass, spinner);
+  await restructuring(projectName, opts.typescript, opts.sass, opts.class, spinner);
 
-  if (withSass) {
-    await addSass(spinner, withTS);
+  if (opts.sass) {
+    await addSass(spinner, opts.typescript);
   }
-  if (withTS) {
+  if (opts.typescript) {
     await addTypescript(spinner);
   }
 
@@ -54,33 +54,59 @@ const initialize = (name, opts) => {
     return installFailed('Initialize failed, name of your Project already exist.', spinner);
   }
 
-  createProject(nameFormatted, !!opts.typescript, !!opts.sass);
+  const options = {
+    typescript: !!opts.typescript,
+    sass: !!opts.sass,
+    class: !!opts.class
+  };
+
+  createProject(nameFormatted, options);
 };
 
 // Create App
 program
   .version(`v${package.version}`)
   .command('new [name...]')
-  .description('Create New Application')
+  .description('Create new Application')
   .option('--typescript', 'Generate Typescript Application')
   .option('--sass', 'With Preprocessor SASS')
+  .option(
+    '--class',
+    'Generate Application with Class Component, the future Components will be created with Classes.'
+  )
   .action(initialize);
+
+// Create Page Component
+program
+  .command('page [component...]')
+  .alias('p')
+  .description('Create new Page Component')
+  .option('--skipTests', 'Do not create test file for this Page Component')
+  .option('--class', 'Create Class Component')
+  .action((componentName, opts) => addComponent(formatingFileName(componentName), opts, true));
 
 // Create Component
 program
-  .command('component <component>')
+  .command('component [component...]')
   .alias('c')
-  .description('Create new component')
-  .option('--skipTests', 'Do not create test file for this component')
-  .option('--class', 'Create class component')
-  .action((componentName, opts) => addComponent(formatingFileName(componentName), opts));
+  .description('Create new Component')
+  .option('--skipTests', 'Do not create test file for this Component')
+  .option('--class', 'Create Class Component')
+  .action((componentName, opts) => addComponent(formatingFileName(componentName), opts, false));
 
 // Create Service
 program
   .command('service [name...]')
   .alias('s')
-  .description('Create New Service')
-  .option('--skipTests', 'Do not create test file for this service')
+  .description('Create new Service')
+  .option('--skipTests', 'Do not create test file for this Service')
   .action((serviceName, opts) => addService(formatingFileName(serviceName), opts));
+// Stop generate class component
+program
+  .command('stopClass')
+  .description(
+    'If Application was created with the "--class" command, the future Components created will no longer be Classes.'
+  )
+  .action(stopGenerateClass);
 
 program.parse(process.argv);

@@ -16,8 +16,9 @@ code {
 const appCSS = `.app {
   text-align: center;
 }
+`;
 
-.app-logo {
+const headerCSS = `.app-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -58,4 +59,4 @@ const newComponentCSS = name => `.${name.toLowerCase()} {
 }
 `;
 
-module.exports = { indexCSS, appCSS, newComponentCSS };
+module.exports = { indexCSS, appCSS, headerCSS, newComponentCSS };

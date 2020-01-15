@@ -6,40 +6,54 @@ cra-plus uses [create-react-app](https://github.com/facebook/create-react-app) w
 
 Simply use the command in your terminal
 
-```
-npm i -g cra-plus
-```
+- `npm i -g cra-plus`
 
-Commands:
+**Commands:**
 
-```
-crap new <name> [options App]                     // Create New Application
-crap component|c <component> [options Component]  // Create new Component
-crap service|s <service> [options Service]  // Create new Service
-```
+- Create New Application.
 
-Options Application:
+  - `crap new <appName> [options Application]`
 
-```
---typescript    // Generate Typescript Application
---sass          // With Preprocessor SASS
-```
+- Create new Component.
 
-Options Component:
+  - `crap component|c <component> [options Component]`
 
-```
---skipTests    // Don't create test file for this component
---class        // Create Class Component
-```
+- Create new Service.
 
-Options Service:
+  - `crap service|s <service> [options Service]`
 
-```
---skipTests    // Don't create test file for this service
-```
+- If the application was created with the "--class" command, the future components created will no longer be Classes.
+  - `crap stop class`
+
+**Options Application:**
+
+- Generate Typescript Application.
+
+  - `--typescript`
+
+- With Preprocessor SASS.
+
+  - `--sass`
+
+- Generate Application with Class components, the future components will be created with Classes.
+  - `--class`
+
+**Options Component:**
+
+- Don't create test file for this component.
+
+  - `--skipTests`
+
+- Create Class Component.
+  - `--class`
+
+**Options Service:**
+
+- Don't create test file for this service.
+  - `--skipTests`
 
 # Soon...
 
-- ~~Typescript choice~~,
-- ~~Auto-commit new architecture~~
-- Add CLI for create another ~~components~~, ~~services~~, interfaces etc (in Progress)
+- ~~Typescript choice.~~,
+- ~~Auto-commit new architecture.~~
+- Add CLI commands (in Progress).

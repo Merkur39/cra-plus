@@ -1,5 +1,5 @@
 const shell = require('shelljs');
-const { installFailed } = require('./messages');
+const { installFailed } = require('../libs/messages');
 
 const addSass = async (spinner, withTS) => {
   spinner.start('Install node-sass');
@@ -14,7 +14,7 @@ const addSass = async (spinner, withTS) => {
           spinner.succeed();
           return resolve(stdout);
         }
-      },
+      }
     );
   });
 };

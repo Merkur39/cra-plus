@@ -1,7 +1,7 @@
 const indexTSX = withSass => `import React from 'react';
 import ReactDOM from 'react-dom';
 ${withSass ? "import './styles/index.scss';" : "import './styles/index.css';"}
-import App from './components/App/App.component';
+import App from './pages/App/App.component';
 import * as serviceWorker from './config/serviceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
@@ -13,25 +13,12 @@ serviceWorker.unregister();
 `;
 
 const appTSX = withSass => `import React from 'react';
-import logo from '../../assets/logo.svg';
+import Header from '../../components/Header/Header.component';
 ${withSass ? '' : "import './App.style.css';\n"}
 const App: React.FC = () => {
   return (
-    <div className="app">
-      <header className="app-header">
-        <img src={logo} className="app-logo" alt="logo" />
-        <p>
-          Edit <code>src/components/App/App.component.tsx</code> and save to reload.
-        </p>
-        <a
-          className="app-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app'>
+      <Header />
     </div>
   );
 }
@@ -40,26 +27,13 @@ export default App;
 `;
 
 const appClassTSX = withSass => `import React from 'react';
-import logo from '../../assets/logo.svg';
+import Header from '../../components/Header/Header.component';
 ${withSass ? '' : "import './App.style.css';\n"}
 class App extends React.Component {
   render() {
     return (
       <div className='app'>
-        <header className='app-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <p>
-            Edit <code>src/components/App/App.component.tsx</code> and save to reload.
-          </p>
-          <a
-            className='app-link'
-            href='https://reactjs.org'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            Learn React
-          </a>
-        </header>
+        <Header />
       </div>
     );
   }
@@ -74,6 +48,69 @@ import App from './App.component';
 
 test('renders learn react link', () => {
   const { getByText } = render(<App />);
+  const linkElement = getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+`;
+
+const headerTSX = withSass => `import React from 'react';
+import logo from '../../assets/logo.svg';
+${withSass ? '' : "import './Header.style.css';\n"}
+const Header: React.FC = () => {
+  return (
+    <header className="app-header">
+      <img src={logo} className="app-logo" alt="logo" />
+      <p>
+        Edit <code>src/pages/App/App.component.tsx</code> and save to reload.
+      </p>
+      <a
+        className="app-link"
+        href="https://reactjs.org"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Learn React
+      </a>
+    </header>
+  );
+}
+
+export default Header;
+`;
+
+const headerClassTSX = withSass => `import React from 'react';
+import logo from '../../assets/logo.svg';
+${withSass ? '' : "import './Header.style.css';\n"}
+class Header extends React.Component {
+  render() {
+    return (
+      <header className="app-header">
+        <img src={logo} className="app-logo" alt="logo" />
+        <p>
+          Edit <code>src/pages/App/App.component.tsx</code> and save to reload.
+        </p>
+        <a
+          className="app-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    );
+  }
+}
+
+export default Header;
+`;
+
+const headerTestTSX = `import React from 'react';
+import { render } from '@testing-library/react';
+import Header from './Header.component';
+
+test('renders learn react link', () => {
+  const { getByText } = render(<Header />);
   const linkElement = getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
 });
@@ -317,6 +354,9 @@ module.exports = {
   appTSX,
   appTestTSX,
   appClassTSX,
+  headerTSX,
+  headerClassTSX,
+  headerTestTSX,
   newComponentTS,
   newComponentClassTS,
   newComponentTestTS,

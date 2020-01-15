@@ -1,12 +1,9 @@
 const shell = require('shelljs');
 const { PackagesTypescriptList } = require('../constants/packages');
-const { installFailed } = require('./messages');
+const { installFailed } = require('../libs/messages');
 
 const cmdNpm = () =>
-  `npm i -D ${PackagesTypescriptList.map(p => `${p.prefix}${p.name}`)}`.replace(
-    /,/g,
-    ' ',
-  );
+  `npm i -D ${PackagesTypescriptList.map(p => `${p.prefix}${p.name}`)}`.replace(/,/g, ' ');
 
 const addPackages = async spinner => {
   spinner.start('Install Typescript & Dependencies');

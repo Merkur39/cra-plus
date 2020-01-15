@@ -1,8 +1,9 @@
-const crapConfig = (projectName, withTS, withSass) => `{
+const crapConfig = ({ projectName, withTS, withSass, withClass }) => `{
   "project": {
-    "name": "${projectName}",
+    "projectName": "${projectName}",
     "withTS": ${withTS},
-    "withSass": ${withSass}
+    "withSass": ${withSass},
+    "withClass": ${withClass}
   }
 }
 `;

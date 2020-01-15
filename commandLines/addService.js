@@ -1,18 +1,13 @@
 const { existsSync } = require('fs');
 const { mkdir, touch, ShellString } = require('shelljs');
-const log = require('./cliColors');
-const { installFailed, installServiceSuccess } = require('./messages');
-const { getConfig } = require('./utils');
+const log = require('../libs/log');
+const { installFailed, installServiceSuccess } = require('../libs/messages');
+const { getConfig } = require('../libs/utils');
 const { newServiceTS, newServiceTestTS } = require('../templates/templateTS');
 const { newServiceJS, newServiceTestJS } = require('../templates/templateJS');
 
-const createNewService = (serviceName, servicesDirAlreadyExist, opts) => {
+const createNewService = (serviceName, servicesDirAlreadyExist, opts, config) => {
   return new Promise(resolve => {
-    const config = getConfig();
-    if (!config) {
-      return installFailed('Configuration file "CrapConfig.json" not found');
-    }
-
     const commands = [];
 
     if (!servicesDirAlreadyExist) {
@@ -50,9 +45,6 @@ const createNewService = (serviceName, servicesDirAlreadyExist, opts) => {
 };
 
 const initNewService = async (serviceName, opts) => {
-  const options = {
-    skipTests: !!opts.skipTests
-  };
   const isRightPlace =
     existsSync('./package.json') &&
     existsSync('./crapConfig.json') &&
@@ -70,7 +62,16 @@ const initNewService = async (serviceName, opts) => {
     return installFailed(`Creation failed, name of your Service (${serviceName}) already exists.`);
   }
 
-  return await createNewService(serviceName, servicesDirAlreadyExist, options);
+  const config = getConfig();
+  if (!config) {
+    return installFailed('Configuration file "CrapConfig.json" not found');
+  }
+
+  const options = {
+    skipTests: !!opts.skipTests
+  };
+
+  return await createNewService(serviceName, servicesDirAlreadyExist, options, config);
 };
 
 module.exports = initNewService;

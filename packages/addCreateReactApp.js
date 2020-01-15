@@ -1,5 +1,5 @@
 const shell = require('shelljs');
-const { installFailed } = require('./messages');
+const { installFailed } = require('../libs/messages');
 
 const addCreateReactApp = async (projectName, spinner) => {
   spinner.start(`Execute create-react-app`);
