@@ -2,6 +2,10 @@
 
 cra-plus uses [create-react-app](https://github.com/facebook/create-react-app) with a better architecture and offers several choices to configure your project
 
+# :exclamation: Important :exclamation:
+`cra-plus` is curently in development, please keep an eye on the current version and update your version accordingly with command:
+- `npm i -g cra-plus`
+
 # Use cra-plus
 
 Simply use the command in your terminal
