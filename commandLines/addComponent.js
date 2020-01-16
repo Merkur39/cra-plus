@@ -1,6 +1,5 @@
 const { existsSync } = require('fs');
 const { cat, mkdir, ShellString, touch } = require('shelljs');
-const log = require('../libs/log');
 const {
   newComponentTS,
   newComponentTestTS,
@@ -13,7 +12,7 @@ const {
 } = require('../templates/templateJS');
 const { newComponentCSS } = require('../templates/templateCSS');
 const { addImportSCSS, newComponentSCSS } = require('../templates/templateSass');
-const { installFailed, installComponentSuccess } = require('../libs/messages');
+const { installFailed, installSuccess, wrongPlace } = require('../libs/messages');
 const { getConfig } = require('../libs/utils');
 
 const createNewComponent = async (componentName, opts, config) => {
@@ -68,14 +67,13 @@ const createNewComponent = async (componentName, opts, config) => {
       }
     }
 
-    // Print errors but continue install
     for (const command of commands) {
       if (command.code !== 0 && command.stderr !== undefined) {
-        log.error(`${command.stderr}`);
+        installFailed(`${command.stderr}`);
       }
     }
 
-    installComponentSuccess(componentName);
+    installSuccess(componentName, opts.dir === 'pages' ? 'Page' : 'Component');
     resolve();
   });
 };
@@ -88,9 +86,7 @@ const initNewComponent = async (componentName, opts, isPage) => {
     existsSync('./src/components');
 
   if (!isRightPlace) {
-    return installFailed(
-      'Project not found\nPlease verify your location and move on source project'
-    );
+    return wrongPlace();
   }
 
   const config = getConfig();

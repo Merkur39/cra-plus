@@ -166,6 +166,10 @@ test('Return string', () => {
 });
 `;
 
+const newInterfaceJS = name => `export interface I${name} {
+}
+`;
+
 const serviceWorkerJS = `// This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -325,6 +329,7 @@ module.exports = {
   newComponentTestJS,
   newServiceJS,
   newServiceTestJS,
+  newInterfaceJS,
   serviceWorkerJS,
   setupTestsJS
 };

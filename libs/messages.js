@@ -25,17 +25,33 @@ const installProjectSuccess = projectName => (
   log.info(`Happy hacking!\n`)
 );
 
-const installComponentSuccess = componentName =>
+const installSuccess = (name, type) =>
   log.multiple([
     { color: 'green', str: '\nSuccess!' },
-    { color: 'white', str: `Created Component ${componentName}` }
+    { color: 'white', str: `Created ${type} ${name}` }
   ]);
 
-const installServiceSuccess = serviceName =>
+const wrongPlace = () => (
   log.multiple([
-    { color: 'green', str: '\nSuccess!' },
-    { color: 'white', str: `Created Service ${serviceName}` }
-  ]);
+    { color: 'red', str: '\nError!' },
+    {
+      color: 'white',
+      str: `Project not found at ${process.cwd()}`
+    }
+  ]),
+  log.info(`Please verify your location and move on source project.`),
+  log.multiple([
+    { color: 'white', str: 'Or Create a new Project with' },
+    {
+      color: 'cyan',
+      str: `crap new <appName> [options]`
+    },
+    {
+      color: 'white',
+      str: `command.`
+    }
+  ])
+);
 
 const installFailed = (err, spinner = null) => {
   if (spinner && spinner.isSpinning) {
@@ -48,7 +64,7 @@ const installFailed = (err, spinner = null) => {
 
 module.exports = {
   installProjectSuccess,
-  installComponentSuccess,
-  installServiceSuccess,
+  installSuccess,
+  wrongPlace,
   installFailed
 };

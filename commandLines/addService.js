@@ -1,20 +1,20 @@
 const { existsSync } = require('fs');
 const { mkdir, touch, ShellString } = require('shelljs');
-const log = require('../libs/log');
-const { installFailed, installServiceSuccess } = require('../libs/messages');
+const { installFailed, installSuccess, wrongPlace } = require('../libs/messages');
 const { getConfig } = require('../libs/utils');
 const { newServiceTS, newServiceTestTS } = require('../templates/templateTS');
 const { newServiceJS, newServiceTestJS } = require('../templates/templateJS');
 
-const createNewService = (serviceName, servicesDirAlreadyExist, opts, config) => {
+const createNewService = (serviceName, opts, config) => {
   return new Promise(resolve => {
     const commands = [];
 
-    if (!servicesDirAlreadyExist) {
-      commands.push(mkdir('-p', `src/services/${serviceName}`));
+    if (!existsSync(`./src/services`)) {
+      commands.push(mkdir('-p', `src/services`));
     }
 
     commands.push(
+      mkdir('-p', `src/services/${serviceName}`),
       touch('-c', `src/services/${serviceName}/${serviceName}.service.${config.logic}`)
     );
 
@@ -32,14 +32,13 @@ const createNewService = (serviceName, servicesDirAlreadyExist, opts, config) =>
       )
     );
 
-    // Print errors but continue install
     for (const command of commands) {
       if (command.code !== 0 && command.stderr !== undefined) {
-        log.error(`${command.stderr}`);
+        installFailed(command.stderr);
       }
     }
 
-    installServiceSuccess(serviceName);
+    installSuccess(serviceName, 'Service');
     resolve();
   });
 };
@@ -50,16 +49,13 @@ const initNewService = async (serviceName, opts) => {
     existsSync('./crapConfig.json') &&
     (existsSync('./src/index.jsx') || existsSync('./src/index.tsx'));
 
-  const servicesDirAlreadyExist = existsSync(`./src/services`);
   const servicesNameAlreadyExist = existsSync(`./src/services/${serviceName}`);
 
   if (!isRightPlace) {
-    return installFailed(
-      'Project not found\nPlease verify your location and move on source project'
-    );
+    return wrongPlace();
   }
   if (servicesNameAlreadyExist) {
-    return installFailed(`Creation failed, name of your Service (${serviceName}) already exists.`);
+    return installFailed(`Creation failed, services/${serviceName} name already exists.`);
   }
 
   const config = getConfig();
@@ -71,7 +67,7 @@ const initNewService = async (serviceName, opts) => {
     skipTests: !!opts.skipTests
   };
 
-  return await createNewService(serviceName, servicesDirAlreadyExist, options, config);
+  return await createNewService(serviceName, options, config);
 };
 
 module.exports = initNewService;

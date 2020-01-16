@@ -166,6 +166,10 @@ test('Return string', () => {
 });
 `;
 
+const newInterfaceTS = name => `export interface I${name} {
+}
+`;
+
 const reactAppEnvTS = `/// <reference types="react-scripts" />`;
 
 const serviceWorkerTS = `// This optional code is used to register a service worker.
@@ -362,6 +366,7 @@ module.exports = {
   newComponentTestTS,
   newServiceTS,
   newServiceTestTS,
+  newInterfaceTS,
   serviceWorkerTS,
   setupTestsTS,
   reactAppEnvTS,
