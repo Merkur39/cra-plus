@@ -39,7 +39,10 @@ const initNewInterface = async interfaceName => {
     (existsSync('./src/index.jsx') || existsSync('./src/index.tsx'));
 
   const regex = new RegExp(interfaceName);
-  const interfacesNameAlreadyExist = readdirSync('./src/interfaces').find(f => f.match(regex));
+  let interfacesNameAlreadyExist = null;
+  if (existsSync('./src/interfaces')) {
+    interfacesNameAlreadyExist = readdirSync('./src/interfaces').find(f => f.match(regex));
+  }
 
   if (!isRightPlace) {
     return wrongPlace();
