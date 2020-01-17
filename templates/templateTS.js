@@ -170,6 +170,13 @@ const newInterfaceTS = name => `export interface I${name} {
 }
 `;
 
+const newHookTS = name => `import react from 'react';
+
+const ${name} = () => {};
+
+export default ${name};
+`;
+
 const reactAppEnvTS = `/// <reference types="react-scripts" />`;
 
 const serviceWorkerTS = `// This optional code is used to register a service worker.
@@ -367,6 +374,7 @@ module.exports = {
   newServiceTS,
   newServiceTestTS,
   newInterfaceTS,
+  newHookTS,
   serviceWorkerTS,
   setupTestsTS,
   reactAppEnvTS,

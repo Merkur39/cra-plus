@@ -1,69 +1,13 @@
 #!/usr/bin/env node
 
-const { existsSync } = require('fs');
 const program = require('commander');
-const { exit } = require('shelljs');
-const ora = require('ora');
-const spinner = ora();
-spinner.color = 'green';
-spinner.spinner = 'dots';
-
+const ceateProject = require('./commandLines/createProject');
 const package = require('./package.json');
-const addCreateReactApp = require('./packages/addCreateReactApp');
-const addCommit = require('./packages/addCommit');
-const restructuring = require('./commandLines/restructuring');
-const addSass = require('./packages/addSass');
-const addTypescript = require('./packages/addTypescript');
 const addComponent = require('./commandLines/addComponent');
 const addService = require('./commandLines/addService');
 const addInterface = require('./commandLines/addInterface');
-
+const addHook = require('./commandLines/addHook');
 const { formatingFileName, stopGenerateClass } = require('./libs/utils');
-const { installProjectSuccess, installFailed } = require('./libs/messages');
-
-const createProject = async (projectName, opts) => {
-  await addCreateReactApp(projectName, spinner);
-  await restructuring(projectName, opts.typescript, opts.sass, opts.class, spinner);
-
-  if (opts.sass) {
-    await addSass(spinner, opts.typescript);
-  }
-  if (opts.typescript) {
-    await addTypescript(spinner);
-  }
-
-  // New commit after customization
-  await addCommit(projectName, spinner);
-
-  if (spinner && spinner.isSpinning) {
-    spinner.stop();
-  }
-
-  // Show success message
-  installProjectSuccess(projectName);
-  exit(0);
-};
-
-const initialize = (appName, opts) => {
-  if (!appName.length) {
-    return installFailed('Initialize failed, please add name of your Project.', spinner);
-  }
-
-  // Get Formatted appName
-  const nameFormatted = appName.join(' ').replace(/(-|\s)/g, '_');
-
-  if (existsSync(`./${nameFormatted}`)) {
-    return installFailed('Initialize failed, name of your Project already exist.', spinner);
-  }
-
-  const options = {
-    typescript: !!opts.typescript,
-    sass: !!opts.sass,
-    class: !!opts.class
-  };
-
-  createProject(nameFormatted, options);
-};
 
 // Create App
 program
@@ -76,7 +20,7 @@ program
     '--class',
     'Generate Application with Class Component, the future Components will be created with Classes.'
   )
-  .action((appName, opts) => initialize(appName, opts));
+  .action((appName, opts) => ceateProject(appName, opts));
 
 // Create Page Component
 program
@@ -110,6 +54,13 @@ program
   .alias('i')
   .description('Create new Interface')
   .action(interfaceName => addInterface(formatingFileName(interfaceName)));
+
+// Create Hooks
+program
+  .command('hook [name...]')
+  .alias('h')
+  .description('Create new Hook')
+  .action(hookName => addHook(formatingFileName(hookName)));
 
 // Stop generate class component
 program

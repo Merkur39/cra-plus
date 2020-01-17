@@ -170,6 +170,13 @@ const newInterfaceJS = name => `export interface I${name} {
 }
 `;
 
+const newHookJS = name => `import react from 'react';
+
+const ${name} = () => {};
+
+export default ${name};
+`;
+
 const serviceWorkerJS = `// This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -330,6 +337,7 @@ module.exports = {
   newServiceJS,
   newServiceTestJS,
   newInterfaceJS,
+  newHookJS,
   serviceWorkerJS,
   setupTestsJS
 };
