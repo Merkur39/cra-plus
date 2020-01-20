@@ -40,7 +40,10 @@ const initialize = (appName, opts) => {
   }
 
   // Get Formatted appName
-  const nameFormatted = appName.join(' ').replace(/(-|\s)/g, '_');
+  const nameFormatted = appName
+    .join(' ')
+    .replace(/(-|\s)/g, '_')
+    .toLowerCase();
 
   if (existsSync(`./${nameFormatted}`)) {
     return installFailed('Initialize failed, name of your Project already exist.', spinner);
