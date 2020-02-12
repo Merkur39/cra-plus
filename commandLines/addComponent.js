@@ -25,7 +25,9 @@ const createNewComponent = async (componentName, opts, config) => {
 
       touch('-c', [
         `src/${opts.dir}/${componentName}/${componentName}.component.${config.component}`,
-        `src/${opts.dir}/${componentName}/${componentName}.style.${config.style}`
+        `src/${opts.dir}/${componentName}/${config.withSass ? '_' : ''}${componentName}.style.${
+          config.style
+        }`
       ])
     );
 
@@ -52,7 +54,11 @@ const createNewComponent = async (componentName, opts, config) => {
 
       ShellString(
         config.withSass ? newComponentSCSS(componentName) : newComponentCSS(componentName)
-      ).to(`src/${opts.dir}/${componentName}/${componentName}.style.${config.style}`)
+      ).to(
+        `src/${opts.dir}/${componentName}/${config.withSass ? '_' : ''}${componentName}.style.${
+          config.style
+        }`
+      )
     );
 
     if (config.withSass) {
@@ -98,7 +104,7 @@ const initNewComponent = async (componentName, opts, isPage) => {
     skipTests: !!opts.skipTests,
     class: config.withClass || !!opts.class
   };
-  const componentAlreadyExist = existsSync(`./src/${options.dir}/${componentName}`);
+  const componentAlreadyExist = existsSync(`./src/${options.dir}/_${componentName}`);
 
   if (componentAlreadyExist) {
     return installFailed(`Creation failed, ${options.dir}/${componentName} name already exists.`);

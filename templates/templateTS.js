@@ -1,180 +1,214 @@
-const indexTSX = withSass => `import React from 'react';
-import ReactDOM from 'react-dom';
-${withSass ? "import './styles/index.scss';" : "import './styles/index.css';"}
-import App from './pages/App/App.component';
-import * as serviceWorker from './config/serviceWorker';
+const indexTSX = (withSass) => `import React from 'react'
+import ReactDOM from 'react-dom'
+${withSass ? "import './styles/index.scss'" : "import './styles/index.css'"}
+import App from './App.component'
+import * as serviceWorker from './config/serviceWorker'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'))
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.unregister()
 `;
 
-const appTSX = withSass => `import React from 'react';
-import Header from '../../components/Header/Header.component';
-${withSass ? '' : "import './App.style.css';\n"}
-const App: React.FC = () => {
+const appTSX = () => `import React from 'react'
+import { Route, Switch, Redirect, HashRouter } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
+import ExampleContainer from './components/Container/ExampleContainer/ExampleContainer.component'
+
+export const history = createBrowserHistory()
+
+export const App = () => {
   return (
-    <div className='app'>
-      <Header />
-    </div>
-  );
+    <HashRouter {...history}>
+      <Switch>
+        <Route path='/home' component={ExampleContainer} />
+        <Redirect from='/' to='/home' />
+        <Redirect from='*' to='/home' />
+      </Switch>
+    </HashRouter>
+  )
 }
 
-export default App;
+/*
+  Enable Hot Module Reload using 'react-hot-loader' here
+  We enable it here since App is the main root component
+  No need to use it anywhere else, it sould work for all
+  child components
+*/
+export default App
 `;
 
-const appClassTSX = withSass => `import React from 'react';
-import Header from '../../components/Header/Header.component';
-${withSass ? '' : "import './App.style.css';\n"}
+const appClassTSX = () => `import React from 'react'
+import { Route, Switch, Redirect, HashRouter } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
+import ExampleContainer from './components/Container/ExampleContainer/ExampleContainer.component'
+
+export const history = createBrowserHistory()
+
 class App extends React.Component {
   render() {
     return (
-      <div className='app'>
-        <Header />
-      </div>
-    );
+      <HashRouter {...history}>
+        <Switch>
+          <Route path='/home' component={ExampleContainer} />
+          <Redirect from='/' to='/home' />
+          <Redirect from='*' to='/home' />
+        </Switch>
+      </HashRouter>
+    )
   }
 }
 
-export default App;
+/*
+  Enable Hot Module Reload using 'react-hot-loader' here
+  We enable it here since App is the main root component
+  No need to use it anywhere else, it sould work for all
+  child components
+*/
+export default App
 `;
 
-const appTestTSX = `import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App.component';
+const exampleContainerTSX = (withSass) => `import React from 'react'
+import Example from '../../Content/Example/Example.component'
+${withSass ? '' : `import './ExampleContainer.style.css';\n`}
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
-`;
-
-const headerTSX = withSass => `import React from 'react';
-import logo from '../../assets/logo.svg';
-${withSass ? '' : "import './Header.style.css';\n"}
-const Header: React.FC = () => {
+const ExampleContainer: React.FC = () => {
   return (
-    <header className="app-header">
-      <img src={logo} className="app-logo" alt="logo" />
-      <p>
-        Edit <code>src/pages/App/App.component.tsx</code> and save to reload.
-      </p>
-      <a
-        className="app-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-    </header>
-  );
+    <>
+      <div>ExampleContainer</div>
+      <Example />
+    </>
+  )
 }
 
-export default Header;
+export default ExampleContainer
 `;
 
-const headerClassTSX = withSass => `import React from 'react';
-import logo from '../../assets/logo.svg';
-${withSass ? '' : "import './Header.style.css';\n"}
-class Header extends React.Component {
+const exampleContainerClassTSX = (withSass) => `import React from 'react'
+import logo from '../../assets/logo.svg'
+import Example from '../../Content/Example/Example.component'
+${withSass ? '' : `import './ExampleContainer.style.css';\n`}
+
+class ExampleContainer extends React.Component {
   render() {
     return (
-      <header className="app-header">
-        <img src={logo} className="app-logo" alt="logo" />
-        <p>
-          Edit <code>src/pages/App/App.component.tsx</code> and save to reload.
-        </p>
-        <a
-          className="app-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    );
+      <>
+        <div>ExampleContainer</div>
+        <Example />
+      </>
+    )
   }
 }
 
-export default Header;
+export default ExampleContainer
 `;
 
-const headerTestTSX = `import React from 'react';
-import { render } from '@testing-library/react';
-import Header from './Header.component';
+const exampleContainerTestTSX = `import React from 'react'
+import { render } from '@testing-library/react'
+import ExampleContainer from './ExampleContainer.component'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<Header />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+  const { getByText } = render(<ExampleContainer />)
+  const linkElement = getByText(/ExampleContainer/i)
+  expect(linkElement).toBeInTheDocument()
+})
 `;
 
-const newComponentTS = (name, withSass) => `import React from 'react';
-${withSass ? '' : `import './${name}.style.css';\n`}
+const exampleTSX = (withSass) => `import React from 'react'
+${withSass ? '' : `import './Example.style.css';\n`}
+
+const Example: React.FC = () => {
+  return <div>Example</div>
+}
+
+export default Example
+`;
+
+const exampleClassTSX = (withSass) => `import React from 'react'
+import logo from '../../assets/logo.svg'
+${withSass ? '' : `import './Example.style.css';\n`}
+
+class Example extends React.Component {
+  render() {
+    return <div>Example</div>
+  }
+}
+
+export default Example
+`;
+
+const exampleTestTSX = `import React from 'react'
+import { render } from '@testing-library/react'
+import Example from './Example.component'
+
+test('renders learn react link', () => {
+  const { getByText } = render(<Example />)
+  const linkElement = getByText(/Example/i)
+  expect(linkElement).toBeInTheDocument()
+})
+`;
+
+const newComponentTS = (name, withSass) => `import React from 'react'
+${withSass ? '' : `import './${name}.style.css'\n`}
 const ${name}: React.FC = () => {
   return (
     <div className="${name.toLowerCase()}">
       ${name} component
     </div>
-  );
+  )
 }
 
-export default ${name};
+export default ${name}
 `;
 
-const newComponentClassTS = (name, withSass) => `import React from 'react';
-${withSass ? '' : `import './${name}.style.css';\n`}
+const newComponentClassTS = (name, withSass) => `import React from 'react'
+${withSass ? '' : `import './${name}.style.css'\n`}
 class ${name} extends React.Component {
   render() {
     return (
       <div className="${name.toLowerCase()}">
         ${name} component
       </div>
-    );
+    )
   }
 }
 
-export default ${name};
+export default ${name}
 `;
 
-const newComponentTestTS = name => `import React from 'react';
-import { render } from '@testing-library/react';
-import ${name} from './${name}.component';
+const newComponentTestTS = (name) => `import React from 'react'
+import { render } from '@testing-library/react'
+import ${name} from './${name}.component'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<${name} />);
-  const linkElement = getByText(/${name} component/);
-  expect(linkElement).toBeInTheDocument();
-});
+  const { getByText } = render(<${name} />)
+  const linkElement = getByText(/${name} component/)
+  expect(linkElement).toBeInTheDocument()
+})
 `;
 
-const newServiceTS = name => `export const ${name} = (): string => {
-  return 'Hello service ${name}!';
-};
+const newServiceTS = (name) => `export const ${name} = (): string => {
+  return 'Hello service ${name}!'
+}
 `;
-const newServiceTestTS = name => `import { ${name} } from './${name}.service';
+const newServiceTestTS = (name) => `import { ${name} } from './${name}.service'
 
 test('Return string', () => {
-  expect(${name}()).toEqual('Hello service ${name}!');
-});
+  expect(${name}()).toEqual('Hello service ${name}!')
+})
 `;
 
-const newInterfaceTS = name => `export interface I${name} {
+const newInterfaceTS = (name) => `export interface I${name} {
 }
 `;
 
-const newHookTS = name => `import react from 'react';
+const newHookTS = (name) => `import react from 'react'
 
-const ${name} = () => {};
+const ${name} = () => {}
 
-export default ${name};
+export default ${name}
 `;
 
 const reactAppEnvTS = `/// <reference types="react-scripts" />`;
@@ -330,7 +364,7 @@ const setupTestsTS = `// jest-dom adds custom jest matchers for asserting on DOM
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect'
 `;
 
 const tsconfigJSON = `{
@@ -363,11 +397,13 @@ const tsconfigJSON = `{
 module.exports = {
   indexTSX,
   appTSX,
-  appTestTSX,
   appClassTSX,
-  headerTSX,
-  headerClassTSX,
-  headerTestTSX,
+  exampleContainerTSX,
+  exampleContainerClassTSX,
+  exampleContainerTestTSX,
+  exampleTSX,
+  exampleClassTSX,
+  exampleTestTSX,
   newComponentTS,
   newComponentClassTS,
   newComponentTestTS,
@@ -378,5 +414,5 @@ module.exports = {
   serviceWorkerTS,
   setupTestsTS,
   reactAppEnvTS,
-  tsconfigJSON
+  tsconfigJSON,
 };

@@ -19,7 +19,7 @@ const capitalize = str => {
  * @param {String} str
  * @returns
  */
-const formatingFileName = str => {
+const formatingFileName = (str, capitalize = true) => {
   if (typeof str !== 'string' && typeof str === 'object' && typeof str[0] !== 'string') {
     installFailed(`${str} is not a type string`);
     exit(1);
@@ -30,10 +30,10 @@ const formatingFileName = str => {
     nameFormatted = str.join(' ').replace(/(_|-|\s)/g, ' ');
   }
 
-  return (nameFormatted || str).replace(
+  return capitalize ? (nameFormatted || str).replace(
     /(\w+)(?:\s+|$)/g,
     (_, txt) => `${txt.charAt(0).toUpperCase()}${txt.substr(1)}`
-  );
+  ) : (nameFormatted || str)
 };
 
 /**

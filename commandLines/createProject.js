@@ -7,6 +7,7 @@ const { exit } = require('shelljs');
 const addCreateReactApp = require('../packages/addCreateReactApp');
 const addCommit = require('../packages/addCommit');
 const restructuring = require('./restructuring');
+const addRouter = require('../packages/addRouter');
 const addSass = require('../packages/addSass');
 const addTypescript = require('../packages/addTypescript');
 const { installProjectSuccess, installFailed } = require('../libs/messages');
@@ -14,6 +15,7 @@ const { installProjectSuccess, installFailed } = require('../libs/messages');
 const createProject = async (projectName, opts) => {
   await addCreateReactApp(projectName, spinner);
   await restructuring(projectName, opts.typescript, opts.sass, opts.class, spinner);
+  await addRouter(spinner, opts.typescript);
 
   if (opts.sass) {
     await addSass(spinner, opts.typescript);
@@ -23,7 +25,7 @@ const createProject = async (projectName, opts) => {
   }
 
   // New commit after customization
-  await addCommit(projectName, spinner);
+  // await addCommit(projectName, spinner);
 
   if (spinner && spinner.isSpinning) {
     spinner.stop();
@@ -52,7 +54,7 @@ const initialize = (appName, opts) => {
   const options = {
     typescript: !!opts.typescript,
     sass: !!opts.sass,
-    class: !!opts.class
+    class: !!opts.class,
   };
 
   createProject(nameFormatted, options);

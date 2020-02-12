@@ -16,10 +16,7 @@ program
   .description('Create new Application')
   .option('--typescript', 'Generate Typescript Application')
   .option('--sass', 'With Preprocessor SASS')
-  .option(
-    '--class',
-    'Generate Application with Class Component, the future Components will be created with Classes.'
-  )
+  .option('--class', 'Generate Application with Class Component, the future Components will be created with Classes.')
   .action((appName, opts) => ceateProject(appName, opts));
 
 // Create Page Component
@@ -46,28 +43,26 @@ program
   .alias('s')
   .description('Create new Service')
   .option('--skipTests', 'Do not create test file for this Service')
-  .action((serviceName, opts) => addService(formatingFileName(serviceName), opts));
+  .action((serviceName, opts) => addService(formatingFileName(serviceName, false), opts));
 
 // Create Interface (If Typescript project)
 program
   .command('interface [name...]')
   .alias('i')
   .description('Create new Interface')
-  .action(interfaceName => addInterface(formatingFileName(interfaceName)));
+  .action((interfaceName) => addInterface(formatingFileName(interfaceName, false)));
 
 // Create Hooks
 program
   .command('hook [name...]')
   .alias('h')
   .description('Create new Hook')
-  .action(hookName => addHook(formatingFileName(hookName)));
+  .action((hookName) => addHook(formatingFileName(hookName)));
 
 // Stop generate class component
 program
   .command('stopClass')
-  .description(
-    'If Application was created with the "--class" command, the future Components created will no longer be Classes.'
-  )
+  .description('If Application was created with the "--class" command, the future Components created will no longer be Classes.')
   .action(stopGenerateClass);
 
 program.parse(process.argv);
