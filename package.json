@@ -1,6 +1,6 @@
 {
   "name": "cra-plus",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Create app & components react with best archi!",
   "main": "index.js",
   "scripts": {

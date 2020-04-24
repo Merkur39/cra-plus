@@ -25,7 +25,7 @@ const createProject = async (projectName, opts) => {
   }
 
   // New commit after customization
-  // await addCommit(projectName, spinner);
+  await addCommit(projectName, spinner);
 
   if (spinner && spinner.isSpinning) {
     spinner.stop();

@@ -7,22 +7,48 @@ const indexSCSS = `body {
   font-family: 'Roboto', 'Oxygen', 'Helvetica Neue', sans-serif;
 }
 
-@import '../components/Container/ExampleContainer/ExampleContainer.style.scss';
-@import '../components/Content/Example/Example.style.scss';
+@import '../components/Container/Home/Home.style.scss';
+@import '../components/Content/Header/Header.style.scss';
 `;
 
-const appSCSS = `.app {
-  text-align: center;
-}
-`;
-
-const exampleContainerSCSS = `.exemple-container {
+const homeSCSS = `.exemple-container {
   background: #fff;
 }
 `;
 
-const exampleSCSS = `.exemple-container {
-  background: #000;
+const headerSCSS = `.app-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.app-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 1.5vmin);
+  color: white;
+}
+
+.app-link {
+  color: #61dafb;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .app-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 `;
 
@@ -31,4 +57,4 @@ const newComponentSCSS = (name) => `.${name.toLowerCase()} {
 }
 `;
 
-module.exports = { addImportSCSS, indexSCSS, appSCSS, exampleContainerSCSS, exampleSCSS, newComponentSCSS };
+module.exports = { addImportSCSS, indexSCSS, headerSCSS, homeSCSS, newComponentSCSS };

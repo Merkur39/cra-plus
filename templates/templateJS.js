@@ -1,21 +1,21 @@
-const indexJS = (withSass) => `import React from 'react';
-import ReactDOM from 'react-dom';
-${withSass ? "import './styles/index.scss';" : "import './styles/index.css';"}
-import App from './App.component';
-import * as serviceWorker from './config/serviceWorker';
+const indexJS = (withSass) => `import React from 'react'
+import ReactDOM from 'react-dom'
+${withSass ? "import './styles/index.scss'" : "import './styles/index.css'"}
+import App from './App.component'
+import * as serviceWorker from './config/serviceWorker'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'))
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.unregister()
 `;
 
 const appJS = () => `import React from 'react'
 import { Route, Switch, Redirect, HashRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
-import ExampleContainer from './components/Container/ExampleContainer/ExampleContainer.component'
+import Home from './components/Container/Home/Home.component'
 
 export const history = createBrowserHistory()
 
@@ -23,7 +23,7 @@ export const App = () => {
   return (
     <HashRouter {...history}>
       <Switch>
-        <Route path='/home' component={ExampleContainer} />
+        <Route path='/home' component={Home} />
         <Redirect from='/' to='/home' />
         <Redirect from='*' to='/home' />
       </Switch>
@@ -43,7 +43,7 @@ export default App
 const appClassJS = () => `import React from 'react'
 import { Route, Switch, Redirect, HashRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
-import ExampleContainer from './components/Container/ExampleContainer/ExampleContainer.component'
+import Home from './components/Container/Home/Home.component'
 
 export const history = createBrowserHistory()
 
@@ -52,7 +52,7 @@ class App extends React.Component {
     return (
       <HashRouter {...history}>
         <Switch>
-          <Route path='/home' component={ExampleContainer} />
+          <Route path='/home' component={Home} />
           <Redirect from='/' to='/home' />
           <Redirect from='*' to='/home' />
         </Switch>
@@ -70,145 +70,169 @@ class App extends React.Component {
 export default App
 `;
 
-const exampleContainerJS = (withSass) => `import React from 'react'
-import Example from '../../Content/Example/Example.component'
-${withSass ? '' : `import './ExampleContainer.style.css';\n`}
+const homeJS = (withSass) => `import React from 'react'
+import Header from '../../Content/Header/Header.component'
+${withSass ? '' : `import './Home.style.css'\n`}
 
-const ExampleContainer = () => {
+const Home = () => {
   return (
-    <>
-      <div>ExampleContainer</div>
-      <Example />
-    </>
+    <div className='app'>
+      <Header />
+    </div>
   )
 }
 
-export default ExampleContainer
+export default Home
 `;
 
-const exampleContainerClassJS = (withSass) => `import React from 'react'
-import logo from '../../assets/logo.svg'
-import Example from '../../Content/Example/Example.component'
-${withSass ? '' : `import './ExampleContainer.style.css';\n`}
+const homeClassJS = (withSass) => `import React from 'react'
+import Header from '../../Content/Header/Header.component'
+${withSass ? '' : `import './Home.style.css'\n`}
 
-class ExampleContainer extends React.Component {
+class Home extends React.Component {
   render() {
     return (
-      <>
-        <div>ExampleContainer</div>
-        <Example />
-      </>
+      <div className='app'>
+        <Header />
+      </div>
     )
   }
 }
 
-export default ExampleContainer
+export default Home
 `;
 
-const exampleContainerTestJS = `import React from 'react';
-import { render } from '@testing-library/react';
-import ExampleContainer from './ExampleContainer.component';
+const homeTestJS = `import React from 'react'
+import { render } from '@testing-library/react'
+import Home from './Home.component'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<ExampleContainer />);
-  const linkElement = getByText(/ExampleContainer/i);
-  expect(linkElement).toBeInTheDocument();
-});
+  const { getByText } = render(<Home />)
+  const linkElement = getByText(/Home/i)
+  expect(linkElement).toBeInTheDocument()
+})
 `;
 
-const exampleJS = (withSass) => `import React from 'react'
-${withSass ? '' : `import './Example.style.css';\n`}
+const headerJS = (withSass) => `import React from 'react'
+import logo from '../../../assets/logo.svg'
+${withSass ? '' : `import './Header.style.css'\n`}
 
-const Example = () => {
-  return <div>Example</div>
+const Header = () => {
+  return (
+    <header className='app-header'>
+      <a className='app-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
+        <img src={logo} className='app-logo' alt='logo' />
+      </a>
+      <p>Welcome to your new project</p>
+      <small>
+        Thanks use{' '}
+        <a className='app-link' href='https://github.com/Merkur39/cra-plus' target='_blank' rel='noopener noreferrer'>
+          Cra-plus!
+        </a>
+      </small>
+    </header>
+  )
 }
 
-export default Example
+export default Header
 `;
 
-const exampleClassJS = (withSass) => `import React from 'react'
-import logo from '../../assets/logo.svg'
-${withSass ? '' : `import './Example.style.css';\n`}
+const headerClassJS = (withSass) => `import React from 'react'
+import logo from '../../../assets/logo.svg'
+${withSass ? '' : `import './Header.style.css'\n`}
 
-class Example extends React.Component {
+class Header extends React.Component {
   render() {
-    return <div>Example</div>
+    return (
+      <header className='app-header'>
+        <a className='app-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
+          <img src={logo} className='app-logo' alt='logo' />
+        </a>
+        <p>Welcome to your new project</p>
+        <small>
+          Thanks use{' '}
+          <a className='app-link' href='https://github.com/Merkur39/cra-plus' target='_blank' rel='noopener noreferrer'>
+            Cra-plus!
+          </a>
+        </small>
+      </header>
+    )
   }
 }
 
-export default Example
+export default Header
 `;
 
-const exampleTestJS = `import React from 'react';
-import { render } from '@testing-library/react';
-import Example from './Example.component';
+const headerTestJS = `import React from 'react'
+import { render } from '@testing-library/react'
+import Header from './Header.component'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<Example />);
-  const linkElement = getByText(/Example/i);
-  expect(linkElement).toBeInTheDocument();
-});
+  const { getByText } = render(<Header />)
+  const linkElement = getByText(/Header/i)
+  expect(linkElement).toBeInTheDocument()
+})
 `;
 
-const newComponentJS = (name, withSass) => `import React from 'react';
-${withSass ? '' : `import './${name}.style.css';\n`}
+const newComponentJS = (name, withSass) => `import React from 'react'
+${withSass ? '' : `import './${name}.style.css'\n`}
 const ${name} = () => {
   return (
     <div className="${name.toLowerCase()}">
       ${name} component
     </div>
-  );
+  )
 }
 
 export default ${name};
 `;
 
-const newComponentClassJS = (name, withSass) => `import React from 'react';
-${withSass ? '' : `import './${name}.style.css';\n`}
+const newComponentClassJS = (name, withSass) => `import React from 'react'
+${withSass ? '' : `import './${name}.style.css'\n`}
 class ${name} extends React.Component {
   render() {
     return (
       <div className="${name.toLowerCase()}">
         ${name} component
       </div>
-    );
+    )
   }
 }
 
-export default ${name};
+export default ${name}
 `;
 
-const newComponentTestJS = (name) => `import React from 'react';
-import { render } from '@testing-library/react';
-import ${name} from './${name}.component';
+const newComponentTestJS = (name) => `import React from 'react'
+import { render } from '@testing-library/react'
+import ${name} from './${name}.component'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<${name} />);
-  const linkElement = getByText(/${name} component/);
-  expect(linkElement).toBeInTheDocument();
-});
+  const { getByText } = render(<${name} />)
+  const linkElement = getByText(/${name} component/)
+  expect(linkElement).toBeInTheDocument()
+})
 `;
 
 const newServiceJS = (name) => `export const ${name} = () => {
-  return 'Hello service ${name}!';
-};
+  return 'Hello service ${name}!'
+}
 `;
-const newServiceTestJS = (name) => `import { ${name} } from './${name}.service';
+const newServiceTestJS = (name) => `import { ${name} } from './${name}.service'
 
 test('Return string', () => {
-  expect(${name}()).toEqual('Hello service ${name}!');
-});
+  expect(${name}()).toEqual('Hello service ${name}!')
+})
 `;
 
 const newInterfaceJS = (name) => `export interface I${name} {
 }
 `;
 
-const newHookJS = (name) => `import react from 'react';
+const newHookJS = (name) => `import react from 'react'
 
-const ${name} = () => {};
+const ${name} = () => {}
 
-export default ${name};
+export default ${name}
 `;
 
 const serviceWorkerJS = `// This optional code is used to register a service worker.
@@ -361,12 +385,12 @@ module.exports = {
   indexJS,
   appJS,
   appClassJS,
-  exampleContainerJS,
-  exampleContainerClassJS,
-  exampleContainerTestJS,
-  exampleJS,
-  exampleClassJS,
-  exampleTestJS,
+  homeJS,
+  homeClassJS,
+  homeTestJS,
+  headerJS,
+  headerClassJS,
+  headerTestJS,
   newComponentJS,
   newComponentClassJS,
   newComponentTestJS,

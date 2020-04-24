@@ -15,7 +15,7 @@ serviceWorker.unregister()
 const appTSX = () => `import React from 'react'
 import { Route, Switch, Redirect, HashRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
-import ExampleContainer from './components/Container/ExampleContainer/ExampleContainer.component'
+import Home from './components/Container/Home/Home.component'
 
 export const history = createBrowserHistory()
 
@@ -23,7 +23,7 @@ export const App = () => {
   return (
     <HashRouter {...history}>
       <Switch>
-        <Route path='/home' component={ExampleContainer} />
+        <Route path='/home' component={Home} />
         <Redirect from='/' to='/home' />
         <Redirect from='*' to='/home' />
       </Switch>
@@ -43,7 +43,7 @@ export default App
 const appClassTSX = () => `import React from 'react'
 import { Route, Switch, Redirect, HashRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
-import ExampleContainer from './components/Container/ExampleContainer/ExampleContainer.component'
+import Home from './components/Container/Home/Home.component'
 
 export const history = createBrowserHistory()
 
@@ -52,7 +52,7 @@ class App extends React.Component {
     return (
       <HashRouter {...history}>
         <Switch>
-          <Route path='/home' component={ExampleContainer} />
+          <Route path='/home' component={Home} />
           <Redirect from='/' to='/home' />
           <Redirect from='*' to='/home' />
         </Switch>
@@ -70,82 +70,106 @@ class App extends React.Component {
 export default App
 `;
 
-const exampleContainerTSX = (withSass) => `import React from 'react'
-import Example from '../../Content/Example/Example.component'
-${withSass ? '' : `import './ExampleContainer.style.css';\n`}
+const homeTSX = (withSass) => `import React from 'react'
+import Header from '../../Content/Header/Header.component'
+${withSass ? '' : `import './Home.style.css'\n`}
 
-const ExampleContainer: React.FC = () => {
+const Home: React.FC = () => {
   return (
-    <>
-      <div>ExampleContainer</div>
-      <Example />
-    </>
+    <div className='app'>
+      <Header />
+    </div>
   )
 }
 
-export default ExampleContainer
+export default Home
 `;
 
-const exampleContainerClassTSX = (withSass) => `import React from 'react'
-import logo from '../../assets/logo.svg'
+const homeClassTSX = (withSass) => `import React from 'react'
 import Example from '../../Content/Example/Example.component'
-${withSass ? '' : `import './ExampleContainer.style.css';\n`}
+${withSass ? '' : `import './Home.style.css'\n`}
 
-class ExampleContainer extends React.Component {
+class Home extends React.Component {
   render() {
     return (
-      <>
-        <div>ExampleContainer</div>
-        <Example />
-      </>
+      <div className='app'>
+        <Header />
+      </div>
     )
   }
 }
 
-export default ExampleContainer
+export default Home
 `;
 
-const exampleContainerTestTSX = `import React from 'react'
+const homeTestTSX = `import React from 'react'
 import { render } from '@testing-library/react'
-import ExampleContainer from './ExampleContainer.component'
+import Home from './Home.component'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<ExampleContainer />)
-  const linkElement = getByText(/ExampleContainer/i)
+  const { getByText } = render(<Home />)
+  const linkElement = getByText(/Home/i)
   expect(linkElement).toBeInTheDocument()
 })
 `;
 
-const exampleTSX = (withSass) => `import React from 'react'
-${withSass ? '' : `import './Example.style.css';\n`}
+const headerTSX = (withSass) => `import React from 'react'
+import logo from '../../../assets/logo.svg'
+${withSass ? '' : `import './Header.style.css'\n`}
 
-const Example: React.FC = () => {
-  return <div>Example</div>
+const Header: React.FC = () => {
+  return (
+    <header className='app-header'>
+      <a className='app-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
+        <img src={logo} className='app-logo' alt='logo' />
+      </a>
+      <p>Welcome to your new project</p>
+      <small>
+        Thanks use{' '}
+        <a className='app-link' href='https://github.com/Merkur39/cra-plus' target='_blank' rel='noopener noreferrer'>
+          Cra-plus!
+        </a>
+      </small>
+    </header>
+  )
 }
 
-export default Example
+export default Header
 `;
 
-const exampleClassTSX = (withSass) => `import React from 'react'
-import logo from '../../assets/logo.svg'
-${withSass ? '' : `import './Example.style.css';\n`}
+const headerClassTSX = (withSass) => `import React from 'react'
+import logo from '../../../assets/logo.svg'
+${withSass ? '' : `import './Header.style.css'\n`}
 
-class Example extends React.Component {
+class Header extends React.Component {
   render() {
-    return <div>Example</div>
+    return (
+      <header className='app-header'>
+        <a className='app-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
+          <img src={logo} className='app-logo' alt='logo' />
+        </a>
+        <p>Welcome to your new project</p>
+        <small>
+          Thanks use{' '}
+          <a className='app-link' href='https://github.com/Merkur39/cra-plus' target='_blank' rel='noopener noreferrer'>
+            Cra-plus!
+          </a>
+        </small>
+      </header>
+    )
   }
 }
 
-export default Example
+export default Header
 `;
 
-const exampleTestTSX = `import React from 'react'
+const headerTestTSX = `import React from 'react'
 import { render } from '@testing-library/react'
-import Example from './Example.component'
+import Header from './Header.component'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<Example />)
-  const linkElement = getByText(/Example/i)
+  const { getByText } = render(<Header />)
+  const linkElement = getByText(/Header/i)
   expect(linkElement).toBeInTheDocument()
 })
 `;
@@ -398,12 +422,12 @@ module.exports = {
   indexTSX,
   appTSX,
   appClassTSX,
-  exampleContainerTSX,
-  exampleContainerClassTSX,
-  exampleContainerTestTSX,
-  exampleTSX,
-  exampleClassTSX,
-  exampleTestTSX,
+  homeTSX,
+  homeClassTSX,
+  homeTestTSX,
+  headerTSX,
+  headerClassTSX,
+  headerTestTSX,
   newComponentTS,
   newComponentClassTS,
   newComponentTestTS,

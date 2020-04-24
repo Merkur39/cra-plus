@@ -3,12 +3,12 @@ const log = require('../libs/log');
 const {
   appJS,
   appClassJS,
-  exampleContainerJS,
-  exampleContainerClassJS,
-  exampleContainerTestJS,
-  exampleJS,
-  exampleClassJS,
-  exampleTestJS,
+  homeJS,
+  homeClassJS,
+  homeTestJS,
+  headerJS,
+  headerClassJS,
+  headerTestJS,
   indexJS,
   serviceWorkerJS,
   setupTestsJS,
@@ -16,20 +16,20 @@ const {
 const {
   appTSX,
   appClassTSX,
-  exampleContainerTSX,
-  exampleContainerClassTSX,
-  exampleContainerTestTSX,
-  exampleTSX,
-  exampleClassTSX,
-  exampleTestTSX,
+  homeTSX,
+  homeClassTSX,
+  homeTestTSX,
+  headerTSX,
+  headerClassTSX,
+  headerTestTSX,
   indexTSX,
   reactAppEnvTS,
   serviceWorkerTS,
   setupTestsTS,
   tsconfigJSON,
 } = require('../templates/templateTS');
-const { exampleContainerCSS, exampleCSS, indexCSS } = require('../templates/templateCSS');
-const { exampleContainerSCSS, exampleSCSS, indexSCSS } = require('../templates/templateSass');
+const { homeCSS, headerCSS, indexCSS } = require('../templates/templateCSS');
+const { homeSCSS, headerSCSS, indexSCSS } = require('../templates/templateSass');
 const crapConfig = require('../templates/templateCrapConfig');
 const { getConfig } = require('../libs/utils');
 const { installFailed } = require('../libs/messages');
@@ -55,17 +55,17 @@ const restructuring = async (projectName, withTS, withSass, withClass, spinner) 
 
   // Create all repository and files needed
   commands.push(
-    mkdir('-p', ['src/components/Container/ExampleContainer', 'src/components/Content/Example', 'src/assets', 'src/styles', 'src/config']),
+    mkdir('-p', ['src/components/Container/Home', 'src/components/Content/Header', 'src/assets', 'src/styles', 'src/config']),
     touch('-c', [
       `src/index.${config.component}`,
       `src/styles/index.${config.style}`,
       `src/App.${config.component}`,
-      `src/components/Container/ExampleContainer/ExampleContainer.component.${config.component}`,
-      `src/components/Container/ExampleContainer/${withSass ? '_' : ''}ExampleContainer.style.${config.style}`,
-      `src/components/Container/ExampleContainer/ExampleContainer.test.${config.component}`,
-      `src/components/Content/Example/Example.component.${config.component}`,
-      `src/components/Content/Example/${withSass ? '_' : ''}Example.style.${config.style}`,
-      `src/components/Content/Example/Example.test.${config.component}`,
+      `src/components/Container/Home/Home.component.${config.component}`,
+      `src/components/Container/Home/${withSass ? '_' : ''}Home.style.${config.style}`,
+      `src/components/Container/Home/Home.test.${config.component}`,
+      `src/components/Content/Header/Header.component.${config.component}`,
+      `src/components/Content/Header/${withSass ? '_' : ''}Header.style.${config.style}`,
+      `src/components/Content/Header/Header.test.${config.component}`,
       `src/config/serviceWorker.${config.logic}`,
       `src/setupTests.${config.logic}`,
     ]),
@@ -82,27 +82,17 @@ const restructuring = async (projectName, withTS, withSass, withClass, spinner) 
     ShellString(withSass ? indexSCSS : indexCSS).to(`src/styles/index.${config.style}`),
     ShellString(withTS ? (withClass ? appClassTSX() : appTSX()) : withClass ? appClassJS() : appJS()).to(`src/App.component.${config.component}`),
 
-    ShellString(
-      withTS
-        ? withClass
-          ? exampleContainerClassTSX(withSass)
-          : exampleContainerTSX(withSass)
-        : withClass
-        ? exampleContainerClassJS(withSass)
-        : exampleContainerJS(withSass)
-    ).to(`src/components/Container/ExampleContainer/ExampleContainer.component.${config.component}`),
-    ShellString(withSass ? exampleContainerSCSS : exampleContainerCSS).to(
-      `src/components/Container/ExampleContainer/${withSass ? '_' : ''}ExampleContainer.style.${config.style}`
+    ShellString(withTS ? (withClass ? homeClassTSX(withSass) : homeTSX(withSass)) : withClass ? homeClassJS(withSass) : homeJS(withSass)).to(
+      `src/components/Container/Home/Home.component.${config.component}`
     ),
-    ShellString(withTS ? exampleContainerTestTSX : exampleContainerTestJS).to(
-      `src/components/Container/ExampleContainer/ExampleContainer.test.${config.component}`
-    ),
+    ShellString(withSass ? homeSCSS : homeCSS).to(`src/components/Container/Home/${withSass ? '_' : ''}Home.style.${config.style}`),
+    ShellString(withTS ? homeTestTSX : homeTestJS).to(`src/components/Container/Home/Home.test.${config.component}`),
 
-    ShellString(
-      withTS ? (withClass ? exampleClassTSX(withSass) : exampleTSX(withSass)) : withClass ? exampleClassJS(withSass) : exampleJS(withSass)
-    ).to(`src/components/Content/Example/Example.component.${config.component}`),
-    ShellString(withSass ? exampleSCSS : exampleCSS).to(`src/components/Content/Example/${withSass ? '_' : ''}Example.style.${config.style}`),
-    ShellString(withTS ? exampleTestTSX : exampleTestJS).to(`src/components/Content/Example/Example.test.${config.component}`),
+    ShellString(withTS ? (withClass ? headerClassTSX(withSass) : headerTSX(withSass)) : withClass ? headerClassJS(withSass) : headerJS(withSass)).to(
+      `src/components/Content/Header/Header.component.${config.component}`
+    ),
+    ShellString(withSass ? headerSCSS : headerCSS).to(`src/components/Content/Header/${withSass ? '_' : ''}Header.style.${config.style}`),
+    ShellString(withTS ? headerTestTSX : headerTestJS).to(`src/components/Content/Header/Header.test.${config.component}`),
 
     ShellString(withTS ? serviceWorkerTS : serviceWorkerJS).to(`src/config/serviceWorker.${config.logic}`),
 
